@@ -28,7 +28,7 @@ export interface PolicyEngine {
 }
 
 function resolveFanout(): number {
-  const raw = process.env.PIBOT_SUPERVISOR_FANOUT;
+  const raw = process.env.PINION_SUPERVISOR_FANOUT;
   if (raw == null || raw.trim() === "") return DEFAULT_SUPERVISOR_FANOUT;
   const n = Number(raw);
   if (!Number.isFinite(n) || n <= 0) return DEFAULT_SUPERVISOR_FANOUT;

@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Bot, Menu, PanelLeft, TriangleAlert, Activity, FolderTree, GitBranch } from "lucide-react";
-import { pibot } from "@/lib/client";
+import { pinion } from "@/lib/client";
 import type { ProcessLimits, RunningProcessInfo, SessionListItem } from "@/lib/control/types";
 import { MOBILE_QUERY, nextRightPanel, nextSidebarUser, type RightPanelKind } from "@/lib/layout";
 import { sessionProcessStates, type SessionProcessState } from "@/lib/control/types";
@@ -66,7 +66,7 @@ function AppShellContent() {
   const loadProcesses = useCallback(async (showSpinner = false) => {
     if (showSpinner) setProcLoading(true);
     try {
-      const data = await pibot.processes.list();
+      const data = await pinion.processes.list();
       setProcesses(data.processes ?? []);
       if (data.limits) setProcessLimits(data.limits);
     } catch {
@@ -99,7 +99,7 @@ function AppShellContent() {
       const key = sessionId ?? SERVER_PROCESS_KEY;
       setProcBusyKey(key);
       try {
-        await pibot.processes.stop(sessionId, { force });
+        await pinion.processes.stop(sessionId, { force });
         await loadProcesses();
       } finally {
         setProcBusyKey(null);
@@ -115,7 +115,7 @@ function AppShellContent() {
 
   const refresh = useCallback(async () => {
     try {
-      const list = await pibot.sessions.list();
+      const list = await pinion.sessions.list();
       setSessions(list);
       if (!activeId && list.length > 0) {
         setActiveId(list[0].id);
@@ -127,7 +127,7 @@ function AppShellContent() {
 
   useEffect(() => {
     void refresh();
-    void pibot.health
+    void pinion.health
       .get()
       .then((health) => {
         setDefaultCwd(health.defaultCwd);
@@ -163,7 +163,7 @@ function AppShellContent() {
   const remove = async (id: string) => {
     if (!confirm("Delete this session? (pi's own session file is kept on disk)")) return;
     try {
-      await pibot.sessions.delete(id);
+      await pinion.sessions.delete(id);
     } catch {
       /* ignore */
     }
@@ -223,7 +223,7 @@ function AppShellContent() {
             <span className="flex h-5 w-5 items-center justify-center rounded-md bg-primary text-primary-fg">
               <Bot size={13} />
             </span>
-            PiBot
+            Pinion
           </span>
           <span className="hidden text-[11px] text-fg-faint sm:inline">
             Pi agent console · {piInfo?.piVersion ?? "pi --mode rpc"}

@@ -2,25 +2,25 @@
 
 ## Threat model (read this first)
 
-PiBot is a single-user, self-hosted tool. By design it has **no login** and it
+Pinion is a single-user, self-hosted tool. By design it has **no login** and it
 can execute shell commands and read/write files **as the user running the
 server** — that is what makes it useful. Treat anything that can reach its
 port as equivalent to a shell on that machine.
 
 The app is built with that assumption:
 
-- It binds to `127.0.0.1` (loopback only) unless you set `PIBOT_HOST`.
+- It binds to `127.0.0.1` (loopback only) unless you set `PINION_HOST`.
 - Every request must carry an expected `Host` header (loopback by default,
-  plus `PIBOT_ALLOWED_HOSTS`). This blocks DNS-rebinding attacks.
+  plus `PINION_ALLOWED_HOSTS`). This blocks DNS-rebinding attacks.
 - State-changing requests must be same-origin, so a random web page cannot
   drive the API from your browser (CSRF), including `no-cors`/`text/plain`
   POSTs that skip CORS preflight.
-- `PIBOT_TOKEN` optionally requires a shared secret cookie on every request
+- `PINION_TOKEN` optionally requires a shared secret cookie on every request
   for deployments that are reachable beyond localhost.
 
-Do **not** expose PiBot to the public internet. If you need remote access,
+Do **not** expose Pinion to the public internet. If you need remote access,
 put it behind an authenticated reverse proxy, a VPN, or a tunnel such as
-Tailscale, and set `PIBOT_TOKEN`.
+Tailscale, and set `PINION_TOKEN`.
 
 ## Agent tooling (future MCP)
 
@@ -31,7 +31,7 @@ two doors:
    in-process control plane. The caller is already on the machine, so it is
    root-equivalent and bypasses Host/CSRF — it must never be exposed over TCP.
 2. **A separate process using the loopback HTTP API** with
-   `Cookie: pibot_token=...` (the same `PIBOT_TOKEN` boundary as a browser).
+   `Cookie: pinion_token=...` (the same `PINION_TOKEN` boundary as a browser).
 
 An internal MCP HTTP route, a new listener, or a second process manager is
 forbidden. The same caveats as the UI apply to agent tools: `files.*` and the

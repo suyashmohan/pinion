@@ -8,9 +8,9 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 <!-- END:nextjs-agent-rules -->
 
-<!-- PiBot project rules (safe to edit — outside the Next-managed block above) -->
+<!-- Pinion project rules (safe to edit — outside the Next-managed block above) -->
 
-# PiBot — agent notes
+# Pinion — agent notes
 
 Single-user Next.js web GUI driving `pi --mode rpc` (Pi coding agent
 JSON-RPC over stdin/stdout). **Bun-only runtime**: `bun:sqlite`,
@@ -18,7 +18,7 @@ JSON-RPC over stdin/stdout). **Bun-only runtime**: `bun:sqlite`,
 `bun run dev` / `bun run build` / `bun run start` (scripts force
 `bun --bun` internally, so `npm run dev` works too). Never `npx next dev`.
 `dev`/`start` go through `scripts/next.ts`, which binds **127.0.0.1 by
-default** (`PIBOT_HOST=0.0.0.0` to opt into LAN).
+default** (`PINION_HOST=0.0.0.0` to opt into LAN).
 
 ## Layout
 
@@ -56,7 +56,7 @@ default** (`PIBOT_HOST=0.0.0.0` to opt into LAN).
   per-plane fan-out counter. **Server-only barrel** — client code must import
   `@/lib/control/types` / `@/lib/control/projector`, never `@/lib/control`
   (it would bundle `bun:sqlite`).
-- `lib/client/` — isomorphic UI SDK (`PiBotClient`, `pibot` singleton).
+- `lib/client/` — isomorphic UI SDK (`PinionClient`, `pinion` singleton).
   Every call the React app makes goes through it. `http.ts` resolves `fetch`
   lazily and defaults to `credentials: "include"`; `stream.ts` owns the
   `EventSource` and registers each name in `PI_SSE_EVENT_TYPES`
@@ -71,8 +71,8 @@ default** (`PIBOT_HOST=0.0.0.0` to opt into LAN).
 - **Supervisor-agent doors (future MCP; do not add a third):** either
   (a) stdio **in the same OS process** as `bun run start`, importing
   `control` (bypasses Host/CSRF because it is already root-equivalent), or
-  (b) a **separate** process that is a `PiBotClient` against
-  `http://127.0.0.1` with `Cookie: pibot_token=...`. Never import
+  (b) a **separate** process that is a `PinionClient` against
+  `http://127.0.0.1` with `Cookie: pinion_token=...`. Never import
   `createControlPlane`/manager in a second OS process (double spawn), never
   add an internal MCP HTTP route or a new listener. Policy recursion/fan-out
   lives in `lib/control/policy.ts` (`CallContext` on mutating methods;
@@ -90,12 +90,12 @@ default** (`PIBOT_HOST=0.0.0.0` to opt into LAN).
   `suppressHydrationWarning` for exactly that attribute; everything below it
   hydrates strictly. New themes: a new `[data-theme="id"]` block (built-ins)
   or `registerTheme({ id, label, appearance, preview, tokens })` with
-  validated `--pibot-*` overrides.
+  validated `--pinion-*` overrides.
 - `lib/db/` — drizzle + `bun:sqlite`. **`getDb()` is async** — always
   `await` it. Pi's JSONL files are source of truth; sqlite is a cache
   synced from `get_messages`. New nullable columns (e.g. `last_turn_ms`) need
   an idempotent `ALTER TABLE` in `lib/db/index.ts` — `CREATE TABLE IF NOT
-  EXISTS` cannot evolve an existing `data/pibot.db`.
+  EXISTS` cannot evolve an existing `data/pinion.db`.
 - `lib/runtime.ts` (`assertBunRuntime`), `lib/emitter.ts` (tiny emitter),
   `lib/files.ts` (`dirExists`/`hasSqlMigrations` via `Bun.Glob`).
   `node:path` is fine (string math, no Bun equivalent); no other `node:`
@@ -105,18 +105,18 @@ default** (`PIBOT_HOST=0.0.0.0` to opt into LAN).
   decisions live in the pure, unit-tested `lib/request-guard.ts`: Host
   allowlist for every method (DNS rebinding), same-origin for non-GET
   (CSRF, incl. the `no-cors`/`text/plain` preflight bypass), optional
-  `PIBOT_TOKEN` cookie. Keep it that way — never inline security logic in
+  `PINION_TOKEN` cookie. Keep it that way — never inline security logic in
   routes.
 - `lib/net.ts` + `scripts/next.ts` — bind resolution (`DEFAULT_BIND_HOST`
   loopback) and the launcher that passes `-H`/`-p` to Next.
 - `Dockerfile` + `docker-compose.yml` + `.dockerignore` — single-image
-  deployment. Base: `oven/bun:1-debian` — Bun is PiBot's runtime, and Node
+  deployment. Base: `oven/bun:1-debian` — Bun is Pinion's runtime, and Node
   (for the `pi` CLI) is copied in from `node:24-trixie-slim`; both are the
   same Debian release, so glibc matches. Stages run `bun install`,
   `bun run build`, then install `pi` globally with npm. Runner: prod-only
   `node_modules`, `.next` minus Turbopack caches, plus `scripts/` and
-  `lib/net.ts` (the launcher's only import). `PIBOT_HOST=0.0.0.0` inside;
-  compose publishes `127.0.0.1` only (`PIBOT_PORT` overrides the host port).
+  `lib/net.ts` (the launcher's only import). `PINION_HOST=0.0.0.0` inside;
+  compose publishes `127.0.0.1` only (`PINION_PORT` overrides the host port).
   Volumes: `/app/data` (sqlite) and `/root/.pi` (pi auth/sessions).
 - `app/api/sessions/**` — session CRUD, prompt/control/model/stats/tree/
   lifecycle/bash/extension-ui/stream/export. `app/api/projects` — pinned +
@@ -170,7 +170,7 @@ default** (`PIBOT_HOST=0.0.0.0` to opt into LAN).
   `/_global-error` page (`TypeError: null is not an object (evaluating
   'k.H.useContext')`) — the build is red for environmental reasons, not code.
 - After changing `lib/db/schema.ts`, **restart `bun run dev`**. The cached
-  `globalThis.__pibotDbPromise` survives HMR, so the running process never
+  `globalThis.__pinionDbPromise` survives HMR, so the running process never
   runs the `ALTER` in `lib/db/index.ts`; worse, drizzle does not error on a
   missing column — it returns the raw column name (e.g. `lastTurnMs:
   "last_turn_ms"`), which surfaces as `Completed in —`. `bun run start`/
@@ -202,7 +202,7 @@ default** (`PIBOT_HOST=0.0.0.0` to opt into LAN).
   parents must pre-exist (fail-fast by design).
 - Verify with `bunx tsc --noEmit` + `bun run build`; E2E against a dev
   server on a scratch port without touching the user's sessions in
-  `data/pibot.db`.
+  `data/pinion.db`.
 - `react-dom/client` feature-detects input-event support **at import time**.
   Importing it while no DOM exists (a static top-level import in a test file)
   silently takes the legacy path, so `input`/`change` never reach `onChange`
@@ -249,7 +249,7 @@ default** (`PIBOT_HOST=0.0.0.0` to opt into LAN).
   the suite was green because no test rendered SSR vs client output).
 - Test isolation rules: temp `DATABASE_URL` files via
   `freshDb()`/`cleanupDbs()`, unique session ids, `destroyClient` after
-  each manager test. Never touch `./data/pibot.db`, never spawn the real
+  each manager test. Never touch `./data/pinion.db`, never spawn the real
   `pi`, never hit the network in tests.
 - When adding features: extend the suite first and keep ALL existing tests
   passing. No breaking changes to established behavior without explicit

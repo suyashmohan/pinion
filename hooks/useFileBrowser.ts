@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { pibot } from "@/lib/client";
+import { pinion } from "@/lib/client";
 import type { BrowseEntry, FilePreviewData } from "@/lib/file-browser";
 
 export interface DirectoryListing {
@@ -27,7 +27,7 @@ export function useDirectoryListing(sessionId: string, dir: string): DirectoryLi
     setState((prev) => ({ ...prev, loading: true, error: null }));
     void (async () => {
       try {
-        const data = await pibot.files.browse(sessionId, dir);
+        const data = await pinion.files.browse(sessionId, dir);
         if (cancelled) return;
         setState({
           entries: data.entries ?? [],
@@ -73,7 +73,7 @@ export function useFilePreview(sessionId: string, path: string | null): PreviewS
     setState({ data: null, loading: true, error: null });
     void (async () => {
       try {
-        const data = await pibot.files.preview(sessionId, path);
+        const data = await pinion.files.preview(sessionId, path);
         if (cancelled) return;
         setState({ data, loading: false, error: null });
       } catch (err) {

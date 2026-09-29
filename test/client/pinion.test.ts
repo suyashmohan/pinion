@@ -1,9 +1,9 @@
 /**
- * PiBotClient: 1:1 with the UI's HTTP calls, unwrapping where the UI wants
+ * PinionClient: 1:1 with the UI's HTTP calls, unwrapping where the UI wants
  * bare values. Fetch is injected so no network is touched.
  */
 import { describe, expect, test } from "bun:test";
-import { ClientError, PiBotClient } from "@/lib/client/pibot";
+import { ClientError, PinionClient } from "@/lib/client/pinion";
 
 interface Call {
   url: string;
@@ -52,10 +52,10 @@ const SESSION = {
   updatedAt: 1,
 };
 
-describe("PiBotClient", () => {
+describe("PinionClient", () => {
   test("sessions.list unwraps data.sessions", async () => {
     const calls: Call[] = [];
-    const client = new PiBotClient({
+    const client = new PinionClient({
       fetch: stubFetch(
         { "GET /api/sessions": { sessions: [{ ...SESSION, preview: null, messageCount: 0 }] } },
         calls,
@@ -68,7 +68,7 @@ describe("PiBotClient", () => {
 
   test("create unwraps data.session and POSTs the input", async () => {
     const calls: Call[] = [];
-    const client = new PiBotClient({
+    const client = new PinionClient({
       fetch: stubFetch({ "POST /api/sessions": { session: SESSION } }, calls),
     });
     const session = await client.sessions.create({ name: "x", cwd: "/tmp" });
@@ -79,7 +79,7 @@ describe("PiBotClient", () => {
 
   test("get returns the full payload; rename unwraps the row", async () => {
     const calls: Call[] = [];
-    const client = new PiBotClient({
+    const client = new PinionClient({
       fetch: stubFetch(
         {
           "GET /api/sessions/s1": {
@@ -103,7 +103,7 @@ describe("PiBotClient", () => {
 
   test("prompt/control/bash POST the expected JSON", async () => {
     const calls: Call[] = [];
-    const client = new PiBotClient({
+    const client = new PinionClient({
       fetch: stubFetch(
         {
           "POST /api/sessions/s1/prompt": { response: { type: "response", success: true } },
@@ -123,7 +123,7 @@ describe("PiBotClient", () => {
 
   test("delete issues DELETE and requires no body", async () => {
     const calls: Call[] = [];
-    const client = new PiBotClient({
+    const client = new PinionClient({
       fetch: stubFetch({ "DELETE /api/sessions/s1": { deleted: "s1" } }, calls),
     });
     await client.sessions.delete("s1");
@@ -132,7 +132,7 @@ describe("PiBotClient", () => {
 
   test("projects and processes", async () => {
     const calls: Call[] = [];
-    const client = new PiBotClient({
+    const client = new PinionClient({
       fetch: stubFetch(
         {
           "GET /api/projects": { projects: [] },
@@ -147,7 +147,7 @@ describe("PiBotClient", () => {
   });
 
   test("files.rawUrl stays a same-origin /api URL", () => {
-    const client = new PiBotClient({ fetch: stubFetch({}, []) });
+    const client = new PinionClient({ fetch: stubFetch({}, []) });
     expect(client.files.rawUrl("s1", "a/b.png")).toBe(
       "/api/sessions/s1/files/raw?path=a%2Fb.png",
     );
@@ -158,7 +158,7 @@ describe("PiBotClient", () => {
 
   test("error envelopes become ClientError with the server message", async () => {
     const calls: Call[] = [];
-    const client = new PiBotClient({
+    const client = new PinionClient({
       fetch: stubFetch(
         { "GET /api/sessions/s1": { error: "Session not found", __status: 404 } },
         calls,
@@ -171,14 +171,14 @@ describe("PiBotClient", () => {
 
   test("token + baseUrl + credentials ride every request", async () => {
     const calls: Call[] = [];
-    const client = new PiBotClient({
+    const client = new PinionClient({
       baseUrl: "http://127.0.0.1:3000",
       token: "secret",
-      fetch: stubFetch({ "GET http://127.0.0.1:3000/api/health": { app: "PiBot" } }, calls),
+      fetch: stubFetch({ "GET http://127.0.0.1:3000/api/health": { app: "Pinion" } }, calls),
     });
     await client.health.get();
     expect(calls[0]!.url).toBe("http://127.0.0.1:3000/api/health");
-    expect(calls[0]!.headers.Cookie).toBe("pibot_token=secret");
+    expect(calls[0]!.headers.Cookie).toBe("pinion_token=secret");
     expect(calls[0]!.credentials).toBe("include");
   });
 });

@@ -89,7 +89,7 @@ function installMobileDom(seedCollapsed: string[]): Window {
     };
   };
   (win as unknown as Record<string, unknown>).matchMedia = mm;
-  win.localStorage.setItem("pibot.project.collapsed", JSON.stringify(seedCollapsed));
+  win.localStorage.setItem("pinion.project.collapsed", JSON.stringify(seedCollapsed));
 
   const g = globalThis as unknown as Record<string, unknown>;
   const w = win as unknown as Record<string, unknown>;
@@ -218,7 +218,7 @@ describe("AppShell hydration", () => {
     const win = installMobileDom([]);
     // The persisted preference must be applied *after* mount, or the first
     // client render (list) would diverge from SSR and hydration would warn.
-    win.localStorage.setItem("pibot.files.view", "gallery");
+    win.localStorage.setItem("pinion.files.view", "gallery");
     const doc = win.document as unknown as Document;
     const container = doc.createElement("div");
     container.innerHTML = ssr;

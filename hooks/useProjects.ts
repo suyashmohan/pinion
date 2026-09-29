@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { pibot } from "@/lib/client";
+import { pinion } from "@/lib/client";
 
 export interface ProjectInfo {
   path: string;
@@ -17,7 +17,7 @@ export function useProjects() {
 
   const refresh = useCallback(async () => {
     try {
-      setProjects(await pibot.projects.list());
+      setProjects(await pinion.projects.list());
     } catch {
       /* ignore transient */
     }
@@ -31,7 +31,7 @@ export function useProjects() {
   const pin = useCallback(
     async (folderPath: string): Promise<string | null> => {
       try {
-        await pibot.projects.pin(folderPath);
+        await pinion.projects.pin(folderPath);
       } catch (err) {
         return err instanceof Error ? err.message : "Failed to add project";
       }
@@ -44,7 +44,7 @@ export function useProjects() {
   const unpin = useCallback(
     async (folderPath: string) => {
       try {
-        await pibot.projects.unpin(folderPath);
+        await pinion.projects.unpin(folderPath);
       } catch {
         /* ignore */
       }

@@ -1,13 +1,13 @@
 #!/usr/bin/env bun
 /**
- * Dev/start launcher that binds PiBot to loopback by default.
+ * Dev/start launcher that binds Pinion to loopback by default.
  *
  * `next dev` and `next start` default to 0.0.0.0; for a tool with shell
  * access that is a footgun, so the npm scripts go through here instead.
  *
  *   bun run dev                 → http://127.0.0.1:3000
- *   PIBOT_HOST=0.0.0.0 bun run dev   → LAN (also set PIBOT_ALLOWED_HOSTS)
- *   PIBOT_PORT=4000 bun run start
+ *   PINION_HOST=0.0.0.0 bun run dev   → LAN (also set PINION_ALLOWED_HOSTS)
+ *   PINION_PORT=4000 bun run start
  *
  * Extra arguments are forwarded to Next (`bun run dev -- --turbo`).
  */
@@ -23,7 +23,7 @@ let bind;
 try {
   bind = resolveBind();
 } catch (err) {
-  console.error(`[pibot] ${err instanceof Error ? err.message : String(err)}`);
+  console.error(`[pinion] ${err instanceof Error ? err.message : String(err)}`);
   process.exit(2);
 }
 
@@ -31,12 +31,12 @@ const { host, port } = bind;
 const forwarded = process.argv.slice(3);
 const displayHost = host === "0.0.0.0" || host === "::" ? "localhost" : host;
 
-console.log(`[pibot] ${mode} → http://${displayHost}:${port} (bound to ${host})`);
+console.log(`[pinion] ${mode} → http://${displayHost}:${port} (bound to ${host})`);
 if (host !== "127.0.0.1" && host !== "localhost" && host !== "::1") {
   console.log(
-    `[pibot] warning: bound to ${host}. PiBot can run shell commands — ` +
+    `[pinion] warning: bound to ${host}. Pinion can run shell commands — ` +
       `only expose it on networks you trust, and add the address you browse ` +
-      `from to PIBOT_ALLOWED_HOSTS.`,
+      `from to PINION_ALLOWED_HOSTS.`,
   );
 }
 

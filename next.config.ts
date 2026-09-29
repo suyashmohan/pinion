@@ -2,8 +2,8 @@ import type { NextConfig } from "next";
 
 // LAN device origins allowed to reach Next.js dev resources (HMR) while
 // running `bun run dev`. Empty by default — loopback always works. Set
-// PIBOT_ALLOWED_DEV_ORIGINS="host1,host2" when testing from a phone/tablet.
-const allowedDevOrigins = (process.env.PIBOT_ALLOWED_DEV_ORIGINS ?? "")
+// PINION_ALLOWED_DEV_ORIGINS="host1,host2" when testing from a phone/tablet.
+const allowedDevOrigins = (process.env.PINION_ALLOWED_DEV_ORIGINS ?? "")
   .split(",")
   .map((origin) => origin.trim())
   .filter(Boolean);

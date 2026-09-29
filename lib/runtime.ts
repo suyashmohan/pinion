@@ -5,7 +5,7 @@ export const IS_BUN =
 export function assertBunRuntime(scope: string): void {
   if (!IS_BUN) {
     throw new Error(
-      `[${scope}] PiBot must run on the Bun runtime. Start it with \`bun --bun run dev\` (or \`bun --bun run start\`).`,
+      `[${scope}] Pinion must run on the Bun runtime. Start it with \`bun --bun run dev\` (or \`bun --bun run start\`).`,
     );
   }
 }

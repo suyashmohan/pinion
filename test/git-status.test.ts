@@ -47,8 +47,8 @@ async function initRepo(): Promise<string> {
   const dir = await makeTempDir();
   await git(dir, "init", "-q");
   await git(dir, "symbolic-ref", "HEAD", "refs/heads/main");
-  await git(dir, "config", "user.email", "pibot@test");
-  await git(dir, "config", "user.name", "PiBot Test");
+  await git(dir, "config", "user.email", "pinion@test");
+  await git(dir, "config", "user.name", "Pinion Test");
   return dir;
 }
 
@@ -244,7 +244,7 @@ describe("readGitStatus", () => {
   });
 
   test("reports a missing working directory with an error", async () => {
-    const status = await readGitStatus("/tmp/pibot-definitely-missing-dir");
+    const status = await readGitStatus("/tmp/pinion-definitely-missing-dir");
     expect(status.isRepo).toBe(false);
     expect(status.error).toBeTruthy();
   });

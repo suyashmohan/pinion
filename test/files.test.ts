@@ -12,7 +12,7 @@ afterAll(async () => {
 describe("dirExists", () => {
   test("true for directories, false for missing paths and files", async () => {
     expect(await dirExists("/tmp")).toBe(true);
-    expect(await dirExists("/nope-missing-dir-pibot-xyz")).toBe(false);
+    expect(await dirExists("/nope-missing-dir-pinion-xyz")).toBe(false);
     // this test file itself is a file, not a directory
     expect(await dirExists(new URL("./files.test.ts", import.meta.url).pathname)).toBe(false);
   });
@@ -26,7 +26,7 @@ describe("hasSqlMigrations", () => {
     await Bun.write(`${withSql}/0001_init.sql`, "select 1;");
     expect(await hasSqlMigrations(withSql)).toBe(true);
     expect(await hasSqlMigrations(empty)).toBe(false);
-    expect(await hasSqlMigrations("/nope-missing-dir-pibot-xyz")).toBe(false);
+    expect(await hasSqlMigrations("/nope-missing-dir-pinion-xyz")).toBe(false);
   });
 });
 
@@ -55,8 +55,8 @@ describe("resolveBrowseDir (sidebar folder picker)", () => {
     dirs.push(home);
     expect(await resolveBrowseDir("", home)).toBe(home);
     expect(await resolveBrowseDir("  ", home)).toBe(home);
-    expect(await resolveBrowseDir("/nope-missing-pibot-xyz", home)).toBe(home);
-    expect(await resolveBrowseDir("", "/nope-missing-pibot-xyz")).toBe("/");
+    expect(await resolveBrowseDir("/nope-missing-pinion-xyz", home)).toBe(home);
+    expect(await resolveBrowseDir("", "/nope-missing-pinion-xyz")).toBe("/");
   });
 });
 
@@ -74,7 +74,7 @@ describe("listSubdirectories (folders only)", () => {
   });
 
   test("missing paths and plain files yield an empty list", async () => {
-    expect(await listSubdirectories("/nope-missing-dir-pibot-xyz")).toEqual([]);
+    expect(await listSubdirectories("/nope-missing-dir-pinion-xyz")).toEqual([]);
     expect(await listSubdirectories(new URL("./files.test.ts", import.meta.url).pathname)).toEqual([]);
   });
 });

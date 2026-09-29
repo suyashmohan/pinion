@@ -20,8 +20,8 @@ function req(method: string, path = "/", headers: Record<string, string> = {}): 
 }
 
 beforeEach(() => {
-  delete process.env.PIBOT_TOKEN;
-  delete process.env.PIBOT_ALLOWED_HOSTS;
+  delete process.env.PINION_TOKEN;
+  delete process.env.PINION_ALLOWED_HOSTS;
 });
 
 describe("hostnameOf", () => {
@@ -50,7 +50,7 @@ describe("hostnameOf", () => {
 describe("isSameOrigin", () => {
   test("accepts the exact host", () => {
     expect(isSameOrigin("http://localhost:3000", "localhost:3000", "http")).toBe(true);
-    expect(isSameOrigin("https://pibot.example", "pibot.example", "https")).toBe(true);
+    expect(isSameOrigin("https://pinion.example", "pinion.example", "https")).toBe(true);
   });
 
   test("rejects a different host, port or scheme", () => {
@@ -75,8 +75,8 @@ describe("guardConfigFromEnv", () => {
   test("parses token and comma-separated hosts", () => {
     expect(
       guardConfigFromEnv({
-        PIBOT_TOKEN: " s3cret ",
-        PIBOT_ALLOWED_HOSTS: "192.168.1.5, My-Laptop.local ,,",
+        PINION_TOKEN: " s3cret ",
+        PINION_ALLOWED_HOSTS: "192.168.1.5, My-Laptop.local ,,",
       }),
     ).toEqual({ token: "s3cret", allowedHosts: ["192.168.1.5", "my-laptop.local"] });
   });
@@ -84,7 +84,7 @@ describe("guardConfigFromEnv", () => {
 
 describe("cookie helpers", () => {
   test("readCookie finds the value among other cookies", () => {
-    expect(readCookie("a=1; pibot_token=abc; b=2", TOKEN_COOKIE)).toBe("abc");
+    expect(readCookie("a=1; pinion_token=abc; b=2", TOKEN_COOKIE)).toBe("abc");
     expect(readCookie("a=1", TOKEN_COOKIE)).toBeNull();
     expect(readCookie(null, TOKEN_COOKIE)).toBeNull();
   });
@@ -125,7 +125,7 @@ describe("evaluateRequestGuard — host allowlist (DNS rebinding)", () => {
     expect(evaluateRequestGuard(bare, OPEN).action).toBe("deny");
   });
 
-  test("honours PIBOT_ALLOWED_HOSTS", () => {
+  test("honours PINION_ALLOWED_HOSTS", () => {
     const cfg: GuardConfig = { token: null, allowedHosts: ["192.168.1.5", "my-laptop.local"] };
     expect(evaluateRequestGuard(req("GET", "/", { host: "192.168.1.5:3000" }), cfg)).toEqual({
       action: "allow",

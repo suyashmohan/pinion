@@ -1,32 +1,32 @@
-# PiBot: Next.js GUI + `pi` coding agent in one container.
+# Pinion: Next.js GUI + `pi` coding agent in one container.
 #
-#   cp .env.example .env     # provider keys + PIBOT_WORKSPACE live there
+#   cp .env.example .env     # provider keys + PINION_WORKSPACE live there
 #   docker compose up --build
-#   → http://127.0.0.1:3000   (PIBOT_PORT=3210 to publish elsewhere)
+#   → http://127.0.0.1:3000   (PINION_PORT=3210 to publish elsewhere)
 #
-# The published port is loopback-only on purpose: PiBot can run shell commands.
-# For LAN access publish on all interfaces AND set PIBOT_ALLOWED_HOSTS to the
+# The published port is loopback-only on purpose: Pinion can run shell commands.
+# For LAN access publish on all interfaces AND set PINION_ALLOWED_HOSTS to the
 # name/IP you browse from (see Security in README.md).
-name: pibot
+name: pinion
 
 services:
-  pibot:
+  pinion:
     build:
       context: .
       args:
-        # PiBot is tested against pi 0.85.x; bump deliberately.
+        # Pinion is tested against pi 0.85.x; bump deliberately.
         PI_VERSION: "0.85.1"
-    image: pibot:local
+    image: pinion:local
     # No `init: true` — the image's ENTRYPOINT is tini, which must stay PID 1
     # to reap the `pi` subprocesses and forward signals.
     restart: unless-stopped
     ports:
-      # Loopback-only by default (PiBot can run shell commands). Override the
-      # host port with PIBOT_PORT=3210; for LAN access replace 127.0.0.1 with
-      # 0.0.0.0 — and then set PIBOT_ALLOWED_HOSTS too.
-      - "127.0.0.1:${PIBOT_PORT:-3000}:3000"
+      # Loopback-only by default (Pinion can run shell commands). Override the
+      # host port with PINION_PORT=3210; for LAN access replace 127.0.0.1 with
+      # 0.0.0.0 — and then set PINION_ALLOWED_HOSTS too.
+      - "127.0.0.1:${PINION_PORT:-3000}:3000"
     # Secrets — provider API keys (DEEPSEEK_API_KEY, ANTHROPIC_API_KEY, …),
-    # PIBOT_TOKEN, PIBOT_WORKSPACE, PIBOT_ALLOWED_HOSTS — belong in `.env` at
+    # PINION_TOKEN, PINION_WORKSPACE, PINION_ALLOWED_HOSTS — belong in `.env` at
     # the repo root, which is gitignored. Compose loads that whole file into
     # the container here, so no credential ever needs to appear in this YAML.
     # (`cp .env.example .env` to start; missing file is fine.)
@@ -34,26 +34,26 @@ services:
       - path: .env
         required: false
     environment:
-      PIBOT_HOST: "0.0.0.0"
-      PIBOT_PORT: "3000"
+      PINION_HOST: "0.0.0.0"
+      PINION_PORT: "3000"
       # Container paths are pinned here so host values meant for a bare-metal
       # run (e.g. PI_DEFAULT_CWD=/Users/you/projects) can't leak in via .env.
       PI_DEFAULT_CWD: /workspace
-      DATABASE_URL: "file:/app/data/pibot.db"
+      DATABASE_URL: "file:/app/data/pinion.db"
       PI_BINARY: "pi"
       # Optional shared secret / LAN hostnames, also settable in .env.
-      PIBOT_TOKEN: "${PIBOT_TOKEN:-}"
-      PIBOT_ALLOWED_HOSTS: "${PIBOT_ALLOWED_HOSTS:-}"
+      PINION_TOKEN: "${PINION_TOKEN:-}"
+      PINION_ALLOWED_HOSTS: "${PINION_ALLOWED_HOSTS:-}"
     volumes:
-      # SQLite cache (DATABASE_URL=file:/app/data/pibot.db).
-      - pibot-data:/app/data
+      # SQLite cache (DATABASE_URL=file:/app/data/pinion.db).
+      - pinion-data:/app/data
       # pi auth, settings, skills and session JSONL files.
       # Swap for "${HOME}/.pi:/root/.pi" to reuse the host's pi login and
       # sessions inside the container (the container will also write there).
-      - pibot-agent:/root/.pi
+      - pinion-agent:/root/.pi
       # Project tree the agent reads/writes. Defaults to ./workspace.
-      - "${PIBOT_WORKSPACE:-./workspace}:/workspace"
+      - "${PINION_WORKSPACE:-./workspace}:/workspace"
 
 volumes:
-  pibot-data:
-  pibot-agent:
+  pinion-data:
+  pinion-agent:

@@ -41,7 +41,7 @@ const SERVER_PROC: RunningProcessInfo = {
   sessionId: null,
   kind: "server",
   name: "Server metadata",
-  cwd: "/Users/me/pibot",
+  cwd: "/Users/me/pinion",
   pid: 99,
   busy: false,
   startedAt: now - 5_000,

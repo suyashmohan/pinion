@@ -1,6 +1,6 @@
 # Contributing
 
-Thanks for taking a look at PiBot. It is a single-user, self-hosted app, and
+Thanks for taking a look at Pinion. It is a single-user, self-hosted app, and
 its behavior is covered by a Bun-native test suite — that suite is the
 contract, so changes should keep it green.
 
@@ -41,7 +41,7 @@ remove tests for intentionally-removed behavior, and say so in the PR.
 
 Test isolation rules: temp `DATABASE_URL` files via `freshDb()`, unique
 session ids, `destroyClient()` after each manager test. Never touch
-`./data/pibot.db`, never spawn the real `pi`, never hit the network.
+`./data/pinion.db`, never spawn the real `pi`, never hit the network.
 
 ## Style
 

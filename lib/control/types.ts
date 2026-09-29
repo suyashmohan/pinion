@@ -95,7 +95,7 @@ export type AgentMessage =
   | (Record<string, unknown> & { role: string });
 
 /** Stable id for the assistant draft that is still streaming. */
-export const STREAMING_MESSAGE_ID = "pibot:streaming-draft";
+export const STREAMING_MESSAGE_ID = "pinion:streaming-draft";
 
 /**
  * Build the assistant message for a still-streaming turn.
@@ -409,7 +409,7 @@ export interface DialogAnswer {
 
 /** Response payload of `GET /api/health`. */
 export interface HealthSnapshot {
-  app: "PiBot";
+  app: "Pinion";
   piBinary: string;
   piVersion: string | null;
   piAvailable: boolean;

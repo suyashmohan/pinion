@@ -28,17 +28,17 @@ interface ManagedEntry {
 }
 
 declare global {
-  var __pibotManaged: Map<string, ManagedEntry> | undefined;
-  var __pibotInflight: Map<string, Promise<PiRpcClient>> | undefined;
-  var __pibotGlobalClient: PiRpcClient | undefined;
-  var __pibotGlobalDetach: (() => void) | undefined;
-  var __pibotGlobalStartedAt: number | undefined;
-  var __pibotSweeperStarted: boolean | undefined;
+  var __pinionManaged: Map<string, ManagedEntry> | undefined;
+  var __pinionInflight: Map<string, Promise<PiRpcClient>> | undefined;
+  var __pinionGlobalClient: PiRpcClient | undefined;
+  var __pinionGlobalDetach: (() => void) | undefined;
+  var __pinionGlobalStartedAt: number | undefined;
+  var __pinionSweeperStarted: boolean | undefined;
 }
 
 function managedMap(): Map<string, ManagedEntry> {
-  if (!globalThis.__pibotManaged) globalThis.__pibotManaged = new Map();
-  return globalThis.__pibotManaged;
+  if (!globalThis.__pinionManaged) globalThis.__pinionManaged = new Map();
+  return globalThis.__pinionManaged;
 }
 
 /** Broadcast a server-side synthesized event to SSE subscribers. */
@@ -168,13 +168,13 @@ export function ensureClient(webId: string): Promise<PiRpcClient> {
     existing.lastActivity = Date.now();
     return Promise.resolve(existing.client);
   }
-  if (!globalThis.__pibotInflight) globalThis.__pibotInflight = new Map();
-  const running = globalThis.__pibotInflight.get(webId);
+  if (!globalThis.__pinionInflight) globalThis.__pinionInflight = new Map();
+  const running = globalThis.__pinionInflight.get(webId);
   if (running) return running;
   const p = ensureClientInner(webId).finally(() => {
-    if (globalThis.__pibotInflight?.get(webId) === p) globalThis.__pibotInflight.delete(webId);
+    if (globalThis.__pinionInflight?.get(webId) === p) globalThis.__pinionInflight.delete(webId);
   });
-  globalThis.__pibotInflight.set(webId, p);
+  globalThis.__pinionInflight.set(webId, p);
   return p;
 }
 
@@ -293,9 +293,9 @@ export async function listRunningProcesses(): Promise<RunningProcessInfo[]> {
     });
   }
 
-  const global = globalThis.__pibotGlobalClient;
+  const global = globalThis.__pinionGlobalClient;
   if (global?.alive) {
-    const startedAt = globalThis.__pibotGlobalStartedAt ?? Date.now();
+    const startedAt = globalThis.__pinionGlobalStartedAt ?? Date.now();
     out.push({
       sessionId: null,
       kind: "server",
@@ -327,12 +327,12 @@ export function stopProcess(
   const signal = opts.force ? "SIGKILL" : "SIGTERM";
 
   if (sessionId === null) {
-    const client = globalThis.__pibotGlobalClient;
+    const client = globalThis.__pinionGlobalClient;
     if (!client?.alive) return false;
-    globalThis.__pibotGlobalDetach?.();
-    globalThis.__pibotGlobalDetach = undefined;
-    globalThis.__pibotGlobalClient = undefined;
-    globalThis.__pibotGlobalStartedAt = undefined;
+    globalThis.__pinionGlobalDetach?.();
+    globalThis.__pinionGlobalDetach = undefined;
+    globalThis.__pinionGlobalClient = undefined;
+    globalThis.__pinionGlobalStartedAt = undefined;
     try {
       client.dispose(signal);
     } catch {
@@ -423,8 +423,8 @@ function reapEntry(entry: ManagedEntry, reason: "idle" | "cap"): void {
 }
 
 function ensureSweeper(): void {
-  if (globalThis.__pibotSweeperStarted) return;
-  globalThis.__pibotSweeperStarted = true;
+  if (globalThis.__pinionSweeperStarted) return;
+  globalThis.__pinionSweeperStarted = true;
   const t = setInterval(() => {
     try {
       const reaped = sweepIdleClients();
@@ -452,10 +452,10 @@ export function destroyClient(webId: string): void {
 
 /** Shared client (server cwd) used for metadata like model listings. */
 export async function ensureGlobalClient(): Promise<PiRpcClient> {
-  const cur = globalThis.__pibotGlobalClient;
+  const cur = globalThis.__pinionGlobalClient;
   if (cur && cur.alive) return cur;
   try {
-    globalThis.__pibotGlobalDetach?.();
+    globalThis.__pinionGlobalDetach?.();
   } catch {
     /* noop */
   }
@@ -466,12 +466,12 @@ export async function ensureGlobalClient(): Promise<PiRpcClient> {
   }
   const cwd = process.env.PI_DEFAULT_CWD?.trim() || process.cwd();
   const client = PiRpcClient.spawn({ cwd, extraCliArgs: ["--no-session"] });
-  globalThis.__pibotGlobalClient = client;
-  globalThis.__pibotGlobalStartedAt = Date.now();
+  globalThis.__pinionGlobalClient = client;
+  globalThis.__pinionGlobalStartedAt = Date.now();
   const detach = () => {
     client.removeAllListeners();
   };
-  globalThis.__pibotGlobalDetach = detach;
+  globalThis.__pinionGlobalDetach = detach;
   await client.send({ type: "get_state" });
   return client;
 }

@@ -108,7 +108,7 @@ describe("SessionService CRUD", () => {
 
   test("create with a missing cwd → 400 ControlError", async () => {
     const err = await control.sessions
-      .create({ cwd: "/definitely/not/here-pibot" })
+      .create({ cwd: "/definitely/not/here-pinion" })
       .catch((e: unknown) => e);
     expect(err).toBeInstanceOf(ControlError);
     expect((err as ControlError).status).toBe(400);

@@ -64,7 +64,7 @@ describe("chat header stacking (model dropdown legibility)", () => {
 describe("sidebar project/session nesting", () => {
   const now = Date.now();
   const project: ProjectListItem = {
-    path: "/tmp/pibot-ui/proj",
+    path: "/tmp/pinion-ui/proj",
     name: "proj",
     pinned: true,
     missing: false,

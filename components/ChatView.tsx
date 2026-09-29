@@ -14,7 +14,7 @@ import {
   Shrink,
   Sparkles,
 } from "lucide-react";
-import { pibot, ClientError } from "@/lib/client";
+import { pinion, ClientError } from "@/lib/client";
 import { exportDownloadUrl, exportFileName } from "@/lib/export-html";
 import { usePiSession } from "@/hooks/usePiSession";
 import { cn, formatDuration, truncate } from "@/lib/utils";
@@ -80,12 +80,12 @@ export function ChatView({
     const errText = (err: unknown) =>
       err instanceof ClientError ? err.message : err instanceof Error ? err.message : String(err);
     try {
-      await pibot.sessions.prompt(sessionId, payload);
+      await pinion.sessions.prompt(sessionId, payload);
     } catch (err) {
       // Agent busy without queue mode -> retry automatically as steer.
       if (mode === "direct") {
         try {
-          await pibot.sessions.prompt(sessionId, { ...payload, streamingBehavior: "steer" });
+          await pinion.sessions.prompt(sessionId, { ...payload, streamingBehavior: "steer" });
         } catch (retryErr) {
           s.pushToast("error", errText(retryErr) || "Failed to send");
         }
@@ -102,7 +102,7 @@ export function ChatView({
   const control = async (action: string, extra?: Record<string, unknown>) => {
     setBusy(action);
     try {
-      const r = await pibot.sessions.control(sessionId, { action, ...extra });
+      const r = await pinion.sessions.control(sessionId, { action, ...extra });
       if (action === "compact") s.pushToast("info", "Compaction requested.");
       if (action === "clear_queue") void s.refreshMessages();
       return r;
@@ -119,7 +119,7 @@ export function ChatView({
 
   const pickModel = async (m: PiModel) => {
     try {
-      await pibot.sessions.setModel(sessionId, { provider: m.provider, modelId: m.id });
+      await pinion.sessions.setModel(sessionId, { provider: m.provider, modelId: m.id });
       s.pushToast("info", `Model → ${String(m.provider ?? "")}/${m.id}`);
       void s.refreshStats();
     } catch (err) {
@@ -132,7 +132,7 @@ export function ChatView({
 
   const pickThinking = async (level: string) => {
     try {
-      await pibot.sessions.setThinkingLevel(sessionId, level);
+      await pinion.sessions.setThinkingLevel(sessionId, level);
       void s.refreshStats();
     } catch (err) {
       s.pushToast(
@@ -148,7 +148,7 @@ export function ChatView({
       return;
     }
     try {
-      await pibot.sessions.rename(sessionId, nameDraft.trim());
+      await pinion.sessions.rename(sessionId, nameDraft.trim());
       s.setMeta((m) => (m ? { ...m, name: nameDraft.trim() } : m));
       onRenamed();
     } catch (err) {
@@ -183,7 +183,7 @@ export function ChatView({
   const lifecycle = async (op: string, extra?: Record<string, unknown>) => {
     setBusy(op);
     try {
-      const data = await pibot.sessions.lifecycle(sessionId, { op, ...extra });
+      const data = await pinion.sessions.lifecycle(sessionId, { op, ...extra });
       if (op === "clone" && data.clonedSession?.id) {
         onSessionCloned(data.clonedSession.id);
       } else {

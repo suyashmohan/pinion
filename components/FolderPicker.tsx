@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { ChevronUp, Folder, FolderOpen, Loader2 } from "lucide-react";
-import { pibot } from "@/lib/client";
+import { pinion } from "@/lib/client";
 import { cn } from "@/lib/utils";
 
 export interface FolderEntry {
@@ -62,7 +62,7 @@ export function FolderPicker({
   const load = async (asked: string): Promise<string | null> => {
     setListing({ ...EMPTY, path: asked, loading: true });
     try {
-      const data = await pibot.projects.listFolders(asked);
+      const data = await pinion.projects.listFolders(asked);
       setListing({
         path: data.path,
         parent: data.parent,

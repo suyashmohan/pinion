@@ -1,10 +1,10 @@
-# PiBot — Web GUI for the Pi coding agent
+# Pinion — Web GUI for the Pi coding agent
 
 Single-user Next.js + Tailwind CSS v4 webapp that drives **`pi --mode rpc`**
 (the Pi.dev agent's JSON-RPC mode) through a modern chat interface with dark
 and light themes.
 
-> **Security:** PiBot has no login and can run shell commands and edit files as
+> **Security:** Pinion has no login and can run shell commands and edit files as
 your user. It binds to `127.0.0.1` by default and refuses unexpected hosts and
 cross-origin mutations, but anything that can reach its port has a shell on
 your machine. Run it in [Docker](#docker) so that shell lives in a container
@@ -13,7 +13,7 @@ instead of your account. Do not expose it to the internet — see
 
 ## Screenshot
 
-![PiBot showing a chat transcript next to the project sidebar, git rail and file browser](./docs/screenshot.png)
+![Pinion showing a chat transcript next to the project sidebar, git rail and file browser](./docs/screenshot.png)
 
 *Dark theme: project-grouped sidebar, streamed transcript with tool output, and
 the right-hand rail (Files/Git).*
@@ -53,20 +53,20 @@ the right-hand rail (Files/Git).*
 
 ## Getting started
 
-Two ways to run PiBot — the [Docker](#docker) image (recommended) or
+Two ways to run Pinion — the [Docker](#docker) image (recommended) or
 [from source](#from-source), for development or when you can't use Docker.
 Both end up on `http://127.0.0.1:3000`. First, clone the repo:
 
 ```bash
-git clone https://github.com/suyashmohan/pibot.git
-cd pibot
+git clone https://github.com/suyashmohan/pinion.git
+cd pinion
 ```
 
 ### Docker
 
-**This is the recommended way to run PiBot.** `pi` has full access to
+**This is the recommended way to run Pinion.** `pi` has full access to
 everything it can reach — no permission prompts, no built-in sandbox — and
-PiBot hands it a web UI. The container confines that access to the image plus
+Pinion hands it a web UI. The container confines that access to the image plus
 the folders you mount, so the agent can work freely on your projects without
 holding the keys to the rest of the machine.
 
@@ -82,9 +82,9 @@ The compose file mounts:
 
 | Mount | Container path | Purpose |
 | ----- | -------------- | ------- |
-| `PIBOT_WORKSPACE` (default `./workspace`) | `/workspace` | Project tree the agent works in; default cwd for new sessions (`PI_DEFAULT_CWD`) |
-| volume `pibot-data` | `/app/data` | SQLite cache (`DATABASE_URL=file:/app/data/pibot.db`) |
-| volume `pibot-agent` | `/root/.pi` | pi auth, settings, skills and session JSONL files |
+| `PINION_WORKSPACE` (default `./workspace`) | `/workspace` | Project tree the agent works in; default cwd for new sessions (`PI_DEFAULT_CWD`) |
+| volume `pinion-data` | `/app/data` | SQLite cache (`DATABASE_URL=file:/app/data/pinion.db`) |
+| volume `pinion-agent` | `/root/.pi` | pi auth, settings, skills and session JSONL files |
 
 Provider keys and other secrets belong in `.env` (gitignored), never in the
 compose file — `docker-compose.yml` only declares which *paths* and *ports*
@@ -104,34 +104,34 @@ Give the agent model credentials in one of three ways:
 
   Any provider variable from pi's `docs/providers.md` works the same way
   (`ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, `GEMINI_API_KEY`, …).
-- **Log in inside the container**: `docker compose exec pibot pi /login`
-- **Reuse the host pi config** by swapping the `pibot-agent` volume for
+- **Log in inside the container**: `docker compose exec pinion pi /login`
+- **Reuse the host pi config** by swapping the `pinion-agent` volume for
   `${HOME}/.pi:/root/.pi`. The container then sees your host auth and sessions
   and writes new session files there — convenient, but shared state.
 
 Without compose:
 
 ```bash
-docker build -t pibot .
+docker build -t pinion .
 docker run --rm -p 127.0.0.1:3000:3000 \
   -v "$HOME/projects:/workspace" \
-  -v pibot-data:/app/data \
-  -v pibot-agent:/root/.pi \
-  pibot
+  -v pinion-data:/app/data \
+  -v pinion-agent:/root/.pi \
+  pinion
 ```
 
 Notes:
 
-- `.env` is also where `PIBOT_WORKSPACE`, `PIBOT_PORT`, `PIBOT_TOKEN` and
-  `PIBOT_ALLOWED_HOSTS` can live; compose reads it for both container env and
+- `.env` is also where `PINION_WORKSPACE`, `PINION_PORT`, `PINION_TOKEN` and
+  `PINION_ALLOWED_HOSTS` can live; compose reads it for both container env and
   YAML substitution. Container paths (`DATABASE_URL`, `PI_BINARY`,
   `PI_DEFAULT_CWD`) are pinned in compose and override `.env`, so a `.env`
   written for a bare-metal run can't break the container.
 - The published port is loopback-only, exactly like the bare-metal default;
-  set `PIBOT_PORT` to publish on a different host port (e.g. `PIBOT_PORT=3210
+  set `PINION_PORT` to publish on a different host port (e.g. `PINION_PORT=3210
   docker compose up`). For LAN access replace `127.0.0.1` with `0.0.0.0` in
-  the compose `ports:` line **and** set `PIBOT_ALLOWED_HOSTS` (plus
-  `PIBOT_TOKEN`) — the [Security](#security) rules are unchanged inside a
+  the compose `ports:` line **and** set `PINION_ALLOWED_HOSTS` (plus
+  `PINION_TOKEN`) — the [Security](#security) rules are unchanged inside a
   container.
 - The image pins the `pi` version (`PI_VERSION`, default `0.85.1`); rebuild
   with `--build-arg PI_VERSION=x.y.z` to move. `GET /api/health` reports the
@@ -162,9 +162,9 @@ Not using the container? Then you install the pieces yourself — the
   # or: curl -fsSL https://pi.dev/install.sh | sh
   ```
 
-  PiBot talks to pi's RPC protocol and is tested against **pi 0.85.x**.
+  Pinion talks to pi's RPC protocol and is tested against **pi 0.85.x**.
   `GET /api/health` reports the detected version — a newer major pi may need
-  PiBot updates.
+  Pinion updates.
 
 Then install and run the dev server:
 
@@ -176,16 +176,16 @@ bun run dev            # http://127.0.0.1:3000
 
 The npm scripts invoke `bun --bun ...` internally, so `npm run dev` also
 lands on the Bun runtime. If you bypass the scripts (e.g. `npx next dev`),
-the server refuses to start with `PiBot must run on the Bun runtime`.
+the server refuses to start with `Pinion must run on the Bun runtime`.
 
 `dev`/`start` go through `scripts/next.ts`, which **binds to loopback by
 default**. To reach the UI from a phone or another machine on your LAN:
 
 ```bash
-PIBOT_HOST=0.0.0.0 PIBOT_ALLOWED_HOSTS=192.168.1.50 bun run dev
+PINION_HOST=0.0.0.0 PINION_ALLOWED_HOSTS=192.168.1.50 bun run dev
 ```
 
-The address you browse from must be in `PIBOT_ALLOWED_HOSTS`, otherwise every
+The address you browse from must be in `PINION_ALLOWED_HOSTS`, otherwise every
 request is rejected with `403` (that is the DNS-rebinding guard). Read
 [Security](#security) before doing this.
 
@@ -208,7 +208,7 @@ refuses to start with a clear error otherwise).
 - Next.js (App Router) + React 19
 - Tailwind CSS v4 (`@import "tailwindcss"`)
 - Drizzle ORM + `bun:sqlite` (built into Bun — no native addon to compile;
-  DB file in `./data/pibot.db`, WAL mode)
+  DB file in `./data/pinion.db`, WAL mode)
 - `lucide-react` icons, `react-markdown` + `remark-gfm` message rendering
 - `highlight.js` (core + a curated language set) for code/markdown previews
 
@@ -226,7 +226,7 @@ unit tests for utils, message helpers, emitter, env parsing, files and
 layout; SQLite schema tests on throwaway temp DBs; protocol and manager
 integration tests against `test/helpers/fake-pi.ts`, a stub
 `pi --mode rpc` agent selected via `PI_BINARY` — so no test touches real
-LLMs, the network, or `./data/pibot.db`. `test/hydration.test.ts`
+LLMs, the network, or `./data/pinion.db`. `test/hydration.test.ts`
 SSR-renders the app shell with zero browser globals, then hydrates it in
 a mobile-simulated DOM (happy-dom) and fails on any React hydration
 warning.
@@ -235,43 +235,43 @@ warning.
 
 | Var | Default | Purpose |
 | --- | ------- | ------- |
-| `DATABASE_URL` | `file:./data/pibot.db` | SQLite file for drizzle |
+| `DATABASE_URL` | `file:./data/pinion.db` | SQLite file for drizzle |
 | `PI_BINARY` | `pi` | Path to the pi agent binary |
 | `PI_DEFAULT_CWD` | `process.cwd()` | Default tool sandbox for new sessions |
 | `PI_EXTRA_ARGS` | _(empty)_ | Extra args for every `pi --mode rpc` spawn |
 | `PI_RPC_TIMEOUT_MS` | `120000` | Request/response timeout |
 | `PI_IDLE_TIMEOUT_MS` | `900000` (15min) | Reap unused pi processes; `0` disables |
 | `PI_MAX_PI_PROCESSES` | `10` | Soft cap (LRU idle eviction); `0` = unlimited |
-| `PIBOT_HOST` | `127.0.0.1` | Bind address; `0.0.0.0` for LAN (see Security) |
-| `PIBOT_PORT` | `3000` (or `PORT`) | HTTP port |
-| `PIBOT_ALLOWED_HOSTS` | _(empty)_ | Extra `Host` names accepted (LAN IP, Tailscale name) |
-| `PIBOT_TOKEN` | _(unset)_ | Shared secret required on every request when set |
-| `PIBOT_ALLOWED_DEV_ORIGINS` | _(empty)_ | Extra origins for Next.js dev resources (LAN HMR) |
+| `PINION_HOST` | `127.0.0.1` | Bind address; `0.0.0.0` for LAN (see Security) |
+| `PINION_PORT` | `3000` (or `PORT`) | HTTP port |
+| `PINION_ALLOWED_HOSTS` | _(empty)_ | Extra `Host` names accepted (LAN IP, Tailscale name) |
+| `PINION_TOKEN` | _(unset)_ | Shared secret required on every request when set |
+| `PINION_ALLOWED_DEV_ORIGINS` | _(empty)_ | Extra origins for Next.js dev resources (LAN HMR) |
 
 ## Security
 
-PiBot is deliberately login-free for single-user, local use, and that shapes
+Pinion is deliberately login-free for single-user, local use, and that shapes
 the whole security model:
 
 - **It binds to loopback by default.** `dev`/`start` pass `-H 127.0.0.1`;
-  `PIBOT_HOST=0.0.0.0` is an explicit opt-in for LAN access.
+  `PINION_HOST=0.0.0.0` is an explicit opt-in for LAN access.
 - **Host allowlist.** `proxy.ts` rejects any request whose `Host` is not
-  `localhost`/`127.0.0.1`/`[::1]` or listed in `PIBOT_ALLOWED_HOSTS`, which
+  `localhost`/`127.0.0.1`/`[::1]` or listed in `PINION_ALLOWED_HOSTS`, which
   stops DNS rebinding (a malicious domain resolving to 127.0.0.1).
-- **Same-origin mutations.** Every non-GET request must come from PiBot's own
+- **Same-origin mutations.** Every non-GET request must come from Pinion's own
   origin. Browsers attach `Origin`/`Sec-Fetch-Site` to cross-site requests, so
   a web page you visit cannot POST to the API — not even with the
   `no-cors` + `text/plain` trick that skips CORS preflight.
-- **Optional shared token.** Setting `PIBOT_TOKEN` requires a cookie minted by
+- **Optional shared token.** Setting `PINION_TOKEN` requires a cookie minted by
   opening `http://<host>:<port>/?token=YOUR_TOKEN` once. Use it when binding
-  beyond loopback or fronting PiBot with a tunnel.
+  beyond loopback or fronting Pinion with a tunnel.
 
 The logic lives in `lib/request-guard.ts` (pure and unit-tested); `proxy.ts`
 is only the Next.js adapter.
 
-**Never expose PiBot directly to the internet.** If you need remote access,
+**Never expose Pinion directly to the internet.** If you need remote access,
 use a VPN/tunnel (Tailscale, WireGuard, SSH port-forward) or an authenticated
-reverse proxy, plus `PIBOT_TOKEN`.
+reverse proxy, plus `PINION_TOKEN`.
 
 ## How it works
 
@@ -309,7 +309,7 @@ Browser ──fetch/SSE──▶ Next.js API routes ──JSONL stdin/stdout─�
   them; stopped sessions respawn on the next prompt.
 - `lib/runtime.ts` — Bun-only guard (`assertBunRuntime`).
 - `lib/request-guard.ts` + `proxy.ts` — the security boundary: Host allowlist,
-  same-origin mutations, optional `PIBOT_TOKEN`. `proxy.ts` (Next 16's renamed
+  same-origin mutations, optional `PINION_TOKEN`. `proxy.ts` (Next 16's renamed
   middleware) is only an adapter so the decision logic stays unit-testable.
 - `lib/net.ts` + `scripts/next.ts` — bind resolution (loopback by default)
   and the `dev`/`start` launcher that enforces it.
@@ -336,7 +336,7 @@ Browser ──fetch/SSE──▶ Next.js API routes ──JSONL stdin/stdout─�
   caller must `await` it. Concurrent callers share one in-flight open.
 - `better-sqlite3` is gone: `bun:sqlite` is listed in no config at all — it's
   part of the runtime, so there is no `serverExternalPackages` entry and no
-  postinstall compile step. The existing `data/pibot.db` file (plain SQLite)
+  postinstall compile step. The existing `data/pinion.db` file (plain SQLite)
   is reused as-is.
 - If the pi process dies, the UI shows a toast; the next prompt (or focusing
   the composer) respawns it and re-attaches to the same pi session file.

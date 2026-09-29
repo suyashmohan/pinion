@@ -3,7 +3,7 @@ import { DARK_THEME, themeBootScript } from "@/lib/themes";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "PiBot — Pi Agent Console",
+  title: "Pinion — Pi Agent Console",
   description: "Single-user web GUI for the Pi coding agent (JSON-RPC mode).",
 };
 

@@ -3,7 +3,7 @@
   "configVersion": 1,
   "workspaces": {
     "": {
-      "name": "pibot",
+      "name": "pinion",
       "dependencies": {
         "clsx": "^2.1.1",
         "drizzle-orm": "^0.44.0",

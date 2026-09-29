@@ -10,7 +10,7 @@ import { assertBunRuntime } from "../runtime";
 // under Bun. All actual I/O in this file goes through Bun APIs.
 
 function resolveDbFile(): string {
-  const raw = process.env.DATABASE_URL ?? "file:./data/pibot.db";
+  const raw = process.env.DATABASE_URL ?? "file:./data/pinion.db";
   const file = raw.startsWith("file:") ? raw.slice("file:".length) : raw;
   // `turbopackIgnore` opts out of the build-time filesystem tracer: the DB
   // path is runtime config, not something to bundle (see AGENTS.md).
@@ -20,8 +20,8 @@ function resolveDbFile(): string {
 }
 
 declare global {
-  var __pibotDbPromise: Promise<BunSQLiteDatabase<typeof schema>> | undefined;
-  var __pibotSqlite: Database | undefined;
+  var __pinionDbPromise: Promise<BunSQLiteDatabase<typeof schema>> | undefined;
+  var __pinionSqlite: Database | undefined;
 }
 
 async function createDb(): Promise<BunSQLiteDatabase<typeof schema>> {
@@ -85,7 +85,7 @@ async function createDb(): Promise<BunSQLiteDatabase<typeof schema>> {
 
   // Lightweight schema evolution: `CREATE TABLE IF NOT EXISTS` cannot add
   // columns to a database created by an older build, so new columns need an
-  // explicit idempotent ALTER (the user's data/pibot.db predates them).
+  // explicit idempotent ALTER (the user's data/pinion.db predates them).
   try {
     const columns = new Set(
       (
@@ -99,7 +99,7 @@ async function createDb(): Promise<BunSQLiteDatabase<typeof schema>> {
     console.error("[db] column migration failed", err);
   }
 
-  globalThis.__pibotSqlite = sqlite;
+  globalThis.__pinionSqlite = sqlite;
   return db;
 }
 
@@ -108,11 +108,11 @@ async function createDb(): Promise<BunSQLiteDatabase<typeof schema>> {
  * in-flight open; a failed open is forgotten so the next call retries.
  */
 export function getDb(): Promise<BunSQLiteDatabase<typeof schema>> {
-  if (!globalThis.__pibotDbPromise) {
-    globalThis.__pibotDbPromise = createDb().catch((err) => {
-      globalThis.__pibotDbPromise = undefined;
+  if (!globalThis.__pinionDbPromise) {
+    globalThis.__pinionDbPromise = createDb().catch((err) => {
+      globalThis.__pinionDbPromise = undefined;
       throw err;
     });
   }
-  return globalThis.__pibotDbPromise;
+  return globalThis.__pinionDbPromise;
 }

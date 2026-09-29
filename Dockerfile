@@ -1,18 +1,18 @@
 # syntax=docker/dockerfile:1
 
 ###############################################################################
-# PiBot in one container: Next.js web GUI + the `pi` coding agent.
+# Pinion in one container: Next.js web GUI + the `pi` coding agent.
 #
 #   docker compose up --build      → http://127.0.0.1:3000
 #
 # Stages
-#   base    Debian trixie + Bun — PiBot's runtime (`bun scripts/next.ts`,
+#   base    Debian trixie + Bun — Pinion's runtime (`bun scripts/next.ts`,
 #           `bun --bun next start`, `bun:sqlite`)
 #   deps    `bun install` (cached on package.json + bun.lock)
 #   build   `bun run build` (Next production build)
 #   runner  compiled app, production deps, Node + globally installed `pi`
 #
-# Bun is the base because it is what PiBot runs on. Node is copied in from the
+# Bun is the base because it is what Pinion runs on. Node is copied in from the
 # official image solely for `pi` (a Node CLI, `engines.node >= 22.19`); both
 # images are the same Debian release, so glibc matches.
 ###############################################################################
@@ -45,7 +45,7 @@ RUN bun run build \
 FROM base AS runner
 WORKDIR /app
 
-# Node + npm for the `pi` CLI (`#!/usr/bin/env node`). PiBot itself never
+# Node + npm for the `pi` CLI (`#!/usr/bin/env node`). Pinion itself never
 # touches them — it runs on the Bun already present in the base image.
 COPY --from=node:24-trixie-slim /usr/local/bin/node /usr/local/bin/node
 COPY --from=node:24-trixie-slim /usr/local/lib/node_modules /usr/local/lib/node_modules
@@ -53,15 +53,15 @@ RUN ln -s /usr/local/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm \
   && ln -s /usr/local/lib/node_modules/npm/bin/npx-cli.js /usr/local/bin/npx
 
 # The agent. Pinned for reproducible builds; override with
-# `--build-arg PI_VERSION=x.y.z` (PiBot is tested against pi 0.85.x).
+# `--build-arg PI_VERSION=x.y.z` (Pinion is tested against pi 0.85.x).
 ARG PI_VERSION=0.85.1
 RUN npm install -g --ignore-scripts "@earendil-works/pi-coding-agent@${PI_VERSION}" \
   && npm cache clean --force
 
 ENV NODE_ENV=production \
-    PIBOT_HOST=0.0.0.0 \
-    PIBOT_PORT=3000 \
-    DATABASE_URL=file:/app/data/pibot.db \
+    PINION_HOST=0.0.0.0 \
+    PINION_PORT=3000 \
+    DATABASE_URL=file:/app/data/pinion.db \
     PI_BINARY=pi \
     PI_DEFAULT_CWD=/workspace
 
@@ -81,9 +81,9 @@ RUN mkdir -p /app/data /workspace
 VOLUME ["/app/data", "/root/.pi"]
 EXPOSE 3000
 
-# 401 is also healthy: it means the optional PIBOT_TOKEN gate is on.
+# 401 is also healthy: it means the optional PINION_TOKEN gate is on.
 HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
-  CMD ["sh", "-c", "curl -s -o /dev/null -w '%{http_code}' \"http://127.0.0.1:${PIBOT_PORT:-3000}/\" | grep -qE '^(200|401)$'"]
+  CMD ["sh", "-c", "curl -s -o /dev/null -w '%{http_code}' \"http://127.0.0.1:${PINION_PORT:-3000}/\" | grep -qE '^(200|401)$'"]
 
 ENTRYPOINT ["tini", "--"]
 CMD ["bun", "scripts/next.ts", "start"]

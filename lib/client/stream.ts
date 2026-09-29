@@ -8,7 +8,7 @@
  * Token note: native `EventSource` cannot set a `Cookie` header. Loopback
  * clients (`opts.token`) need an EventSource polyfill that injects the cookie,
  * or they should hit `GET ${baseUrl}/?token=` once so the cookie jar has
- * `pibot_token`. This effort does not ship that polyfill; the option is not a
+ * `pinion_token`. This effort does not ship that polyfill; the option is not a
  * dead end.
  */
 

@@ -1,5 +1,5 @@
 /**
- * Legacy fetch helper. Absorbed by `@/lib/client` (http.ts / pibot.ts) during
+ * Legacy fetch helper. Absorbed by `@/lib/client` (http.ts / pinion.ts) during
  * the control-plane extraction; kept as a one-line re-export so older imports
  * keep compiling.
  */

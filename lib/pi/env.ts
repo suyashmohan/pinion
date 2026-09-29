@@ -5,7 +5,7 @@ export function piBinary(): string {
 export function defaultCwd(): string {
   return (
     process.env.PI_DEFAULT_CWD?.trim() ||
-    process.env.PIBOT_DEFAULT_CWD?.trim() ||
+    process.env.PINION_DEFAULT_CWD?.trim() ||
     process.cwd()
   );
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { pibot, ClientError } from "@/lib/client";
+import { pinion, ClientError } from "@/lib/client";
 import { applySessionEvent, emptySessionView } from "@/lib/control/projector";
 import {
   streamingAssistantMessage,
@@ -86,7 +86,7 @@ export function usePiSession(sessionId: string | null) {
   const refreshMessages = useCallback(async () => {
     if (!sessionId) return;
     try {
-      const data = await pibot.sessions.messages(sessionId);
+      const data = await pinion.sessions.messages(sessionId);
       setMessages(data.messages);
       setHasProcess(Boolean(data.live));
       // `live: false` alone means the session is asleep — that is normal, not
@@ -101,7 +101,7 @@ export function usePiSession(sessionId: string | null) {
   const refreshStats = useCallback(async () => {
     if (!sessionId) return;
     try {
-      const data = await pibot.sessions.stats(sessionId);
+      const data = await pinion.sessions.stats(sessionId);
       if (typeof data.live === "boolean") setHasProcess(data.live);
       if (data.state) setState(data.state);
       if (data.stats) setStats(data.stats);
@@ -129,7 +129,7 @@ export function usePiSession(sessionId: string | null) {
     }
     setLoading(true);
     try {
-      const data = await pibot.sessions.get(sessionId);
+      const data = await pinion.sessions.get(sessionId);
       setMeta(data.session);
       setState(data.state);
       setStats(data.stats);
@@ -152,7 +152,7 @@ export function usePiSession(sessionId: string | null) {
   const loadModels = useCallback(async () => {
     if (!sessionId) return;
     try {
-      const data = await pibot.sessions.getModel(sessionId);
+      const data = await pinion.sessions.getModel(sessionId);
       setModels((data.models ?? []) as PiModel[]);
       if (data.thinkingLevels) setThinkingLevels(data.thinkingLevels);
     } catch {
@@ -163,7 +163,7 @@ export function usePiSession(sessionId: string | null) {
   const loadCommands = useCallback(async () => {
     if (!sessionId) return;
     try {
-      const data = await pibot.sessions.control(sessionId, { action: "get_commands" });
+      const data = await pinion.sessions.control(sessionId, { action: "get_commands" });
       const cmds = (
         data.response?.data as
           | { commands?: Array<{ name: string; description?: string; source: string }> }
@@ -184,7 +184,7 @@ export function usePiSession(sessionId: string | null) {
     void loadSession();
   }, [sessionId, loadSession]);
 
-  // Live stream. `pibot.sessions.subscribe` owns the EventSource and one
+  // Live stream. `pinion.sessions.subscribe` owns the EventSource and one
   // projector per subscription; this hook folds the snapshot events into view
   // state and runs the REST/toast side effects the projector deliberately
   // does not know about.
@@ -252,7 +252,7 @@ export function usePiSession(sessionId: string | null) {
 
     let off: () => void;
     try {
-      off = pibot.sessions.subscribe(sessionId, onEvent, {
+      off = pinion.sessions.subscribe(sessionId, onEvent, {
         onClose: () => setConnected(false),
       });
     } catch {
@@ -324,7 +324,7 @@ export function usePiSession(sessionId: string | null) {
     if (!ensuring.current) {
       ensuring.current = (async () => {
         try {
-          const data = await pibot.sessions.start(sessionId);
+          const data = await pinion.sessions.start(sessionId);
           setHasProcess(data.live !== false);
           // Everything that needs a live process is (re)loaded now.
           void refreshStats();
@@ -371,7 +371,7 @@ export function usePiSession(sessionId: string | null) {
       if (!sessionId) return;
       setView((v) => ({ ...v, dialogs: v.dialogs.filter((x) => x.id !== dialogId) }));
       try {
-        await pibot.sessions.answerDialog(sessionId, { id: dialogId, ...payload });
+        await pinion.sessions.answerDialog(sessionId, { id: dialogId, ...payload });
       } catch {
         /* ignore */
       }

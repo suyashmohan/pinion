@@ -33,7 +33,7 @@ export default [
   // The matching grep test lives in test/import-fences.test.ts.
   // ---------------------------------------------------------------------
   {
-    name: "pibot/ui-fence",
+    name: "pinion/ui-fence",
     files: [
       "components/**/*.{ts,tsx}",
       "hooks/**/*.{ts,tsx}",
@@ -58,7 +58,7 @@ export default [
     },
   },
   {
-    name: "pibot/api-fence",
+    name: "pinion/api-fence",
     files: ["app/api/**/*.ts"],
     rules: {
       "no-restricted-imports": [
@@ -74,7 +74,7 @@ export default [
     },
   },
   {
-    name: "pibot/client-fence",
+    name: "pinion/client-fence",
     files: ["lib/client/**/*.ts"],
     rules: {
       "no-restricted-imports": [
@@ -95,7 +95,7 @@ export default [
     },
   },
   {
-    name: "pibot/control-isomorphic-fence",
+    name: "pinion/control-isomorphic-fence",
     files: ["lib/control/types.ts", "lib/control/projector.ts"],
     rules: {
       "no-restricted-imports": [
@@ -116,7 +116,7 @@ export default [
     },
   },
   {
-    name: "pibot/control-server-fence",
+    name: "pinion/control-server-fence",
     files: ["lib/control/**/*.ts"],
     ignores: ["lib/control/types.ts", "lib/control/projector.ts"],
     rules: {
@@ -134,7 +134,7 @@ export default [
     },
   },
   {
-    name: "pibot/transport-fence",
+    name: "pinion/transport-fence",
     files: ["lib/pi/manager.ts", "lib/pi/host.ts"],
     rules: {
       "no-restricted-imports": [

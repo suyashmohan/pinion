@@ -8,142 +8,142 @@
 /*
  * Semantic tokens → Tailwind utilities.
  *
- * `inline` makes every utility reference the raw `--pibot-*` variable directly,
+ * `inline` makes every utility reference the raw `--pinion-*` variable directly,
  * so switching `[data-theme]` on <html> re-skins the whole app without touching
  * a single component class. Custom themes (registered at runtime) can override
  * the raw variables inline — see lib/themes.ts.
  */
 @theme inline {
-  --color-app: var(--pibot-app);
-  --color-panel: var(--pibot-panel);
-  --color-raised: var(--pibot-raised);
-  --color-active: var(--pibot-active);
+  --color-app: var(--pinion-app);
+  --color-panel: var(--pinion-panel);
+  --color-raised: var(--pinion-raised);
+  --color-active: var(--pinion-active);
 
-  --color-line: var(--pibot-line);
-  --color-line-strong: var(--pibot-line-strong);
-  --color-line-focus: var(--pibot-line-focus);
+  --color-line: var(--pinion-line);
+  --color-line-strong: var(--pinion-line-strong);
+  --color-line-focus: var(--pinion-line-focus);
 
-  --color-fg: var(--pibot-fg);
-  --color-fg-secondary: var(--pibot-fg-secondary);
-  --color-fg-muted: var(--pibot-fg-muted);
-  --color-fg-subtle: var(--pibot-fg-subtle);
-  --color-fg-faint: var(--pibot-fg-faint);
+  --color-fg: var(--pinion-fg);
+  --color-fg-secondary: var(--pinion-fg-secondary);
+  --color-fg-muted: var(--pinion-fg-muted);
+  --color-fg-subtle: var(--pinion-fg-subtle);
+  --color-fg-faint: var(--pinion-fg-faint);
 
-  --color-primary: var(--pibot-primary);
-  --color-primary-fg: var(--pibot-primary-fg);
-  --color-primary-hover: var(--pibot-primary-hover);
+  --color-primary: var(--pinion-primary);
+  --color-primary-fg: var(--pinion-primary-fg);
+  --color-primary-hover: var(--pinion-primary-hover);
 
-  --color-accent: var(--pibot-accent);
-  --color-accent-2: var(--pibot-accent-2);
-  --color-info: var(--pibot-info);
-  --color-success: var(--pibot-success);
-  --color-warning: var(--pibot-warning);
-  --color-warning-soft: var(--pibot-warning-soft);
-  --color-warning-surface: var(--pibot-warning-surface);
-  --color-danger: var(--pibot-danger);
-  --color-danger-soft: var(--pibot-danger-soft);
-  --color-danger-surface: var(--pibot-danger-surface);
+  --color-accent: var(--pinion-accent);
+  --color-accent-2: var(--pinion-accent-2);
+  --color-info: var(--pinion-info);
+  --color-success: var(--pinion-success);
+  --color-warning: var(--pinion-warning);
+  --color-warning-soft: var(--pinion-warning-soft);
+  --color-warning-surface: var(--pinion-warning-surface);
+  --color-danger: var(--pinion-danger);
+  --color-danger-soft: var(--pinion-danger-soft);
+  --color-danger-surface: var(--pinion-danger-surface);
 
-  --color-overlay: var(--pibot-overlay);
-  --color-code: var(--pibot-code-bg);
+  --color-overlay: var(--pinion-overlay);
+  --color-code: var(--pinion-code-bg);
 }
 
-/* ── Dark (default): the original PiBot palette ─────────────────────────── */
+/* ── Dark (default): the original Pinion palette ─────────────────────────── */
 :root {
   color-scheme: dark;
 
-  --pibot-app: #09090b;
-  --pibot-panel: #18181b;
-  --pibot-raised: #27272a;
-  --pibot-active: #3f3f46;
+  --pinion-app: #09090b;
+  --pinion-panel: #18181b;
+  --pinion-raised: #27272a;
+  --pinion-active: #3f3f46;
 
-  --pibot-line: #27272a;
-  --pibot-line-strong: #3f3f46;
-  --pibot-line-focus: #71717a;
+  --pinion-line: #27272a;
+  --pinion-line-strong: #3f3f46;
+  --pinion-line-focus: #71717a;
 
-  --pibot-fg: #f4f4f5;
-  --pibot-fg-secondary: #d4d4d8;
-  --pibot-fg-muted: #a1a1aa;
-  --pibot-fg-subtle: #71717a;
-  --pibot-fg-faint: #52525b;
+  --pinion-fg: #f4f4f5;
+  --pinion-fg-secondary: #d4d4d8;
+  --pinion-fg-muted: #a1a1aa;
+  --pinion-fg-subtle: #71717a;
+  --pinion-fg-faint: #52525b;
 
-  --pibot-primary: #f4f4f5;
-  --pibot-primary-fg: #09090b;
-  --pibot-primary-hover: #ffffff;
+  --pinion-primary: #f4f4f5;
+  --pinion-primary-fg: #09090b;
+  --pinion-primary-hover: #ffffff;
 
-  --pibot-accent: #a5b4fc;
-  --pibot-accent-2: #c4b5fd;
-  --pibot-info: #38bdf8;
-  --pibot-success: #34d399;
-  --pibot-warning: #fbbf24;
-  --pibot-warning-soft: #fcd34d;
-  --pibot-warning-surface: #451a03;
-  --pibot-danger: #f87171;
-  --pibot-danger-soft: #fca5a5;
-  --pibot-danger-surface: #450a0a;
+  --pinion-accent: #a5b4fc;
+  --pinion-accent-2: #c4b5fd;
+  --pinion-info: #38bdf8;
+  --pinion-success: #34d399;
+  --pinion-warning: #fbbf24;
+  --pinion-warning-soft: #fcd34d;
+  --pinion-warning-surface: #451a03;
+  --pinion-danger: #f87171;
+  --pinion-danger-soft: #fca5a5;
+  --pinion-danger-surface: #450a0a;
 
-  --pibot-overlay: #000000;
-  --pibot-shadow-color: rgba(0, 0, 0, 0.8);
+  --pinion-overlay: #000000;
+  --pinion-shadow-color: rgba(0, 0, 0, 0.8);
 
-  --pibot-code-bg: #101013;
-  --pibot-code-fg: #e4e4e7;
-  --pibot-code-comment: #6b7280;
-  --pibot-code-keyword: #c4b5fd;
-  --pibot-code-string: #86efac;
-  --pibot-code-number: #fbbf24;
-  --pibot-code-title: #93c5fd;
-  --pibot-code-type: #7dd3fc;
-  --pibot-code-attr: #f0abfc;
-  --pibot-code-deleted: #fca5a5;
+  --pinion-code-bg: #101013;
+  --pinion-code-fg: #e4e4e7;
+  --pinion-code-comment: #6b7280;
+  --pinion-code-keyword: #c4b5fd;
+  --pinion-code-string: #86efac;
+  --pinion-code-number: #fbbf24;
+  --pinion-code-title: #93c5fd;
+  --pinion-code-type: #7dd3fc;
+  --pinion-code-attr: #f0abfc;
+  --pinion-code-deleted: #fca5a5;
 }
 
 /* ── Light ──────────────────────────────────────────────────────────────── */
 [data-theme="light"] {
   color-scheme: light;
 
-  --pibot-app: #f4f4f5;
-  --pibot-panel: #ffffff;
-  --pibot-raised: #e4e4e7;
-  --pibot-active: #d4d4d8;
+  --pinion-app: #f4f4f5;
+  --pinion-panel: #ffffff;
+  --pinion-raised: #e4e4e7;
+  --pinion-active: #d4d4d8;
 
-  --pibot-line: #e4e4e7;
-  --pibot-line-strong: #d4d4d8;
-  --pibot-line-focus: #a1a1aa;
+  --pinion-line: #e4e4e7;
+  --pinion-line-strong: #d4d4d8;
+  --pinion-line-focus: #a1a1aa;
 
-  --pibot-fg: #18181b;
-  --pibot-fg-secondary: #3f3f46;
-  --pibot-fg-muted: #52525b;
-  --pibot-fg-subtle: #71717a;
-  --pibot-fg-faint: #a1a1aa;
+  --pinion-fg: #18181b;
+  --pinion-fg-secondary: #3f3f46;
+  --pinion-fg-muted: #52525b;
+  --pinion-fg-subtle: #71717a;
+  --pinion-fg-faint: #a1a1aa;
 
-  --pibot-primary: #18181b;
-  --pibot-primary-fg: #ffffff;
-  --pibot-primary-hover: #27272a;
+  --pinion-primary: #18181b;
+  --pinion-primary-fg: #ffffff;
+  --pinion-primary-hover: #27272a;
 
-  --pibot-accent: #4338ca;
-  --pibot-accent-2: #6d28d9;
-  --pibot-info: #0369a1;
-  --pibot-success: #047857;
-  --pibot-warning: #b45309;
-  --pibot-warning-soft: #92400e;
-  --pibot-warning-surface: #fffbeb;
-  --pibot-danger: #b91c1c;
-  --pibot-danger-soft: #991b1b;
-  --pibot-danger-surface: #fef2f2;
+  --pinion-accent: #4338ca;
+  --pinion-accent-2: #6d28d9;
+  --pinion-info: #0369a1;
+  --pinion-success: #047857;
+  --pinion-warning: #b45309;
+  --pinion-warning-soft: #92400e;
+  --pinion-warning-surface: #fffbeb;
+  --pinion-danger: #b91c1c;
+  --pinion-danger-soft: #991b1b;
+  --pinion-danger-surface: #fef2f2;
 
-  --pibot-overlay: #000000;
-  --pibot-shadow-color: rgba(0, 0, 0, 0.18);
+  --pinion-overlay: #000000;
+  --pinion-shadow-color: rgba(0, 0, 0, 0.18);
 
-  --pibot-code-bg: #f4f4f5;
-  --pibot-code-fg: #27272a;
-  --pibot-code-comment: #71717a;
-  --pibot-code-keyword: #7c3aed;
-  --pibot-code-string: #047857;
-  --pibot-code-number: #b45309;
-  --pibot-code-title: #1d4ed8;
-  --pibot-code-type: #0369a1;
-  --pibot-code-attr: #a21caf;
-  --pibot-code-deleted: #b91c1c;
+  --pinion-code-bg: #f4f4f5;
+  --pinion-code-fg: #27272a;
+  --pinion-code-comment: #71717a;
+  --pinion-code-keyword: #7c3aed;
+  --pinion-code-string: #047857;
+  --pinion-code-number: #b45309;
+  --pinion-code-title: #1d4ed8;
+  --pinion-code-type: #0369a1;
+  --pinion-code-attr: #a21caf;
+  --pinion-code-deleted: #b91c1c;
 }
 
 html,
@@ -152,8 +152,8 @@ body {
 }
 
 body {
-  background-color: var(--pibot-app);
-  color: var(--pibot-fg);
+  background-color: var(--pinion-app);
+  color: var(--pinion-fg);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
 }
@@ -161,14 +161,14 @@ body {
 /* Slim themed scrollbars */
 * {
   scrollbar-width: thin;
-  scrollbar-color: var(--pibot-line-strong) transparent;
+  scrollbar-color: var(--pinion-line-strong) transparent;
 }
 *::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 *::-webkit-scrollbar-thumb {
-  background: var(--pibot-line-strong);
+  background: var(--pinion-line-strong);
   border-radius: 8px;
 }
 *::-webkit-scrollbar-track {
@@ -197,7 +197,7 @@ body {
   font-weight: 600;
   letter-spacing: -0.01em;
   margin: 1em 0 0.4em;
-  color: var(--pibot-fg);
+  color: var(--pinion-fg);
 }
 .md-body h1 {
   font-size: 1.15rem;
@@ -223,21 +223,21 @@ body {
   margin: 0.25em 0;
 }
 .md-body li::marker {
-  color: var(--pibot-fg-subtle);
+  color: var(--pinion-fg-subtle);
 }
 .md-body a {
-  color: var(--pibot-accent);
+  color: var(--pinion-accent);
   text-decoration: underline;
   text-underline-offset: 2px;
 }
 .md-body blockquote {
-  border-left: 2px solid var(--pibot-line-strong);
+  border-left: 2px solid var(--pinion-line-strong);
   padding-left: 0.8em;
   margin: 0.6em 0;
-  color: var(--pibot-fg-muted);
+  color: var(--pinion-fg-muted);
 }
 .md-body hr {
-  border-color: var(--pibot-line);
+  border-color: var(--pinion-line);
   margin: 1em 0;
 }
 .md-body table {
@@ -248,26 +248,26 @@ body {
 }
 .md-body th,
 .md-body td {
-  border: 1px solid var(--pibot-line);
+  border: 1px solid var(--pinion-line);
   padding: 0.4em 0.6em;
   text-align: left;
 }
 .md-body th {
-  background: var(--pibot-raised);
+  background: var(--pinion-raised);
   font-weight: 600;
 }
 .md-body code:not(pre code) {
-  background: var(--pibot-raised);
-  border: 1px solid var(--pibot-line-strong);
+  background: var(--pinion-raised);
+  border: 1px solid var(--pinion-line-strong);
   border-radius: 6px;
   padding: 0.1em 0.35em;
   font-size: 0.82em;
   font-family: var(--font-mono);
-  color: var(--pibot-code-fg);
+  color: var(--pinion-code-fg);
 }
 .md-body pre {
-  background: var(--pibot-code-bg);
-  border: 1px solid var(--pibot-line);
+  background: var(--pinion-code-bg);
+  border: 1px solid var(--pinion-line);
   border-radius: 10px;
   padding: 0.75rem 0.9rem;
   overflow-x: auto;
@@ -280,7 +280,7 @@ body {
   border: none;
   padding: 0;
   font-family: var(--font-mono);
-  color: var(--pibot-code-fg);
+  color: var(--pinion-code-fg);
 }
 .md-body img {
   max-width: 100%;
@@ -293,12 +293,12 @@ body {
   tab-size: 4;
 }
 .hljs {
-  color: var(--pibot-code-fg);
+  color: var(--pinion-code-fg);
   background: transparent;
 }
 .hljs-comment,
 .hljs-quote {
-  color: var(--pibot-code-comment);
+  color: var(--pinion-code-comment);
   font-style: italic;
 }
 .hljs-keyword,
@@ -307,14 +307,14 @@ body {
 .hljs-section,
 .hljs-doctag,
 .hljs-name {
-  color: var(--pibot-code-keyword);
+  color: var(--pinion-code-keyword);
 }
 .hljs-string,
 .hljs-regexp,
 .hljs-addition,
 .hljs-attribute,
 .hljs-meta .hljs-string {
-  color: var(--pibot-code-string);
+  color: var(--pinion-code-string);
 }
 .hljs-number,
 .hljs-symbol,
@@ -324,30 +324,30 @@ body {
 .hljs-link,
 .hljs-selector-attr,
 .hljs-selector-pseudo {
-  color: var(--pibot-code-number);
+  color: var(--pinion-code-number);
 }
 .hljs-title,
 .hljs-title.class_,
 .hljs-title.function_,
 .hljs-built_in,
 .hljs-builtin-name {
-  color: var(--pibot-code-title);
+  color: var(--pinion-code-title);
 }
 .hljs-type,
 .hljs-params,
 .hljs-meta,
 .hljs-class .hljs-title {
-  color: var(--pibot-code-type);
+  color: var(--pinion-code-type);
 }
 .hljs-attr,
 .hljs-property,
 .hljs-selector-class,
 .hljs-selector-id,
 .hljs-tag {
-  color: var(--pibot-code-attr);
+  color: var(--pinion-code-attr);
 }
 .hljs-deletion {
-  color: var(--pibot-code-deleted);
+  color: var(--pinion-code-deleted);
 }
 .hljs-emphasis {
   font-style: italic;

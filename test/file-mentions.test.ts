@@ -104,7 +104,7 @@ describe("completing a mention", () => {
 });
 
 describe("resolveWithinRoot", () => {
-  const root = "/tmp/pibot-mentions-root";
+  const root = "/tmp/pinion-mentions-root";
   test("resolves relative paths inside the root", () => {
     expect(resolveWithinRoot(root, "")).toBe(root);
     expect(resolveWithinRoot(root, "src")).toBe(path.join(root, "src"));

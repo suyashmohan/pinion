@@ -85,9 +85,9 @@ const TREE: Record<string, Fixture> = {
   "/home/user/projects": {
     path: "/home/user/projects",
     parent: "/home/user",
-    entries: [{ name: "pibot", path: "/home/user/projects/pibot" }],
+    entries: [{ name: "pinion", path: "/home/user/projects/pinion" }],
   },
-  "/home/user/projects/pibot": { path: "/home/user/projects/pibot", parent: "/home/user/projects", entries: [] },
+  "/home/user/projects/pinion": { path: "/home/user/projects/pinion", parent: "/home/user/projects", entries: [] },
   "/home": { path: "/home", parent: "/", entries: [{ name: "user", path: "/home/user" }] },
   "/": { path: "/", parent: null, entries: [] },
 };
@@ -219,7 +219,7 @@ describe("FolderPicker", () => {
       await h.clickFolder("/home/user/projects");
       expect(h.input.value).toBe("/home/user/projects");
       expect(h.requestedPaths).toContain("/home/user/projects");
-      expect(panel(h)!.textContent).toContain("pibot");
+      expect(panel(h)!.textContent).toContain("pinion");
       expect(panel(h)!.textContent).not.toContain("work");
     } finally {
       await h.dispose();

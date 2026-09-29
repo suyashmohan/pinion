@@ -2,7 +2,7 @@
  * Session-export staging helpers.
  *
  * pi's `export_html` defaults to writing `<cwd>/pi-session-*.html`, which
- * dumped an export into the user's project on every click. PiBot now stages
+ * dumped an export into the user's project on every click. Pinion now stages
  * the export in the OS temp dir and the browser downloads it from a
  * same-origin GET. These pure helpers are the single source of truth for the
  * temp path + download URL, so the server and the client cannot drift.
@@ -18,10 +18,10 @@ import {
 
 describe("export file naming", () => {
   test("is deterministic per session and lives under the temp dir", () => {
-    expect(EXPORT_FILE_PREFIX).toBe("pibot-export-");
+    expect(EXPORT_FILE_PREFIX).toBe("pinion-export-");
     expect(EXPORT_TEMP_DIR).toBe("/tmp");
-    expect(exportFileName("abc123")).toBe("pibot-export-abc123.html");
-    expect(exportTempPath("abc123")).toBe("/tmp/pibot-export-abc123.html");
+    expect(exportFileName("abc123")).toBe("pinion-export-abc123.html");
+    expect(exportTempPath("abc123")).toBe("/tmp/pinion-export-abc123.html");
   });
 
   test("sanitizes hostile ids so the name can never escape the temp dir", () => {
@@ -34,16 +34,16 @@ describe("export file naming", () => {
   });
 
   test("falls back to a plain name for an empty id", () => {
-    expect(exportFileName("")).toBe("pibot-export-session.html");
+    expect(exportFileName("")).toBe("pinion-export-session.html");
   });
 
   test("keeps nanoid punctuation (ids may start/end with - or _)", () => {
     // Trailing dashes are common nanoid shapes; stripping them made two
     // distinct session ids share one staged file (caught in an HTTP smoke
     // test).
-    expect(exportFileName("vvFyLtbfX8I-")).toBe("pibot-export-vvFyLtbfX8I-.html");
-    expect(exportFileName("-abc_")).toBe("pibot-export--abc_.html");
-    expect(exportFileName("a.b")).toBe("pibot-export-a.b.html");
+    expect(exportFileName("vvFyLtbfX8I-")).toBe("pinion-export-vvFyLtbfX8I-.html");
+    expect(exportFileName("-abc_")).toBe("pinion-export--abc_.html");
+    expect(exportFileName("a.b")).toBe("pinion-export-a.b.html");
   });
 });
 

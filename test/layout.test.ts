@@ -52,7 +52,7 @@ describe("file-browser view preference", () => {
       expect(loadFileViewPreference()).toBe("gallery");
       saveFileViewPreference("list");
       expect(loadFileViewPreference()).toBe("list");
-      store.set("pibot.files.view", "thumbnail");
+      store.set("pinion.files.view", "thumbnail");
       expect(loadFileViewPreference()).toBe("list");
     } finally {
       delete (globalThis as unknown as Record<string, unknown>).localStorage;
@@ -76,7 +76,7 @@ describe("collapsed-projects persistence", () => {
       expect(loadCollapsedPaths()).toEqual(new Set());
       saveCollapsedPaths(new Set(["/a", "/b"]));
       expect(loadCollapsedPaths()).toEqual(new Set(["/a", "/b"]));
-      store.set("pibot.project.collapsed", "not-json{{{");
+      store.set("pinion.project.collapsed", "not-json{{{");
       expect(loadCollapsedPaths()).toEqual(new Set());
     } finally {
       delete (globalThis as unknown as Record<string, unknown>).localStorage;

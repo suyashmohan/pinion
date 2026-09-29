@@ -10,7 +10,7 @@
  * Adding a theme later (a settings page, DB-backed themes) means one of:
  *   1. a new `[data-theme="id"]` block in globals.css, or
  *   2. `registerTheme({ id, label, appearance, preview, tokens })` where
- *      `tokens` is a partial `--pibot-*` map applied inline at runtime.
+ *      `tokens` is a partial `--pinion-*` map applied inline at runtime.
  */
 
 export type ThemeAppearance = "dark" | "light";
@@ -28,13 +28,13 @@ export interface ThemeDefinition {
   appearance: ThemeAppearance;
   /** Swatch colors for pickers/previews (not the full token set). */
   preview: ThemePreview;
-  /** Optional `--pibot-*` overrides for runtime-registered themes. */
+  /** Optional `--pinion-*` overrides for runtime-registered themes. */
   tokens?: Record<string, string>;
 }
 
 /** Sets on `<html>`; the stylesheet switches token blocks on this attribute. */
 export const THEME_ATTRIBUTE = "data-theme";
-export const THEME_STORAGE_KEY = "pibot.theme";
+export const THEME_STORAGE_KEY = "pinion.theme";
 export const DEFAULT_THEME_ID = "dark";
 
 export const DARK_THEME: ThemeDefinition = {
@@ -59,49 +59,49 @@ export const BUILT_IN_THEMES: readonly ThemeDefinition[] = [DARK_THEME, LIGHT_TH
  */
 export const THEME_TOKEN_NAMES = [
   // surfaces
-  "--pibot-app",
-  "--pibot-panel",
-  "--pibot-raised",
-  "--pibot-active",
+  "--pinion-app",
+  "--pinion-panel",
+  "--pinion-raised",
+  "--pinion-active",
   // lines
-  "--pibot-line",
-  "--pibot-line-strong",
-  "--pibot-line-focus",
+  "--pinion-line",
+  "--pinion-line-strong",
+  "--pinion-line-focus",
   // text
-  "--pibot-fg",
-  "--pibot-fg-secondary",
-  "--pibot-fg-muted",
-  "--pibot-fg-subtle",
-  "--pibot-fg-faint",
+  "--pinion-fg",
+  "--pinion-fg-secondary",
+  "--pinion-fg-muted",
+  "--pinion-fg-subtle",
+  "--pinion-fg-faint",
   // inverted/primary button
-  "--pibot-primary",
-  "--pibot-primary-fg",
-  "--pibot-primary-hover",
+  "--pinion-primary",
+  "--pinion-primary-fg",
+  "--pinion-primary-hover",
   // accents
-  "--pibot-accent",
-  "--pibot-accent-2",
-  "--pibot-info",
-  "--pibot-success",
-  "--pibot-warning",
-  "--pibot-warning-soft",
-  "--pibot-warning-surface",
-  "--pibot-danger",
-  "--pibot-danger-soft",
-  "--pibot-danger-surface",
+  "--pinion-accent",
+  "--pinion-accent-2",
+  "--pinion-info",
+  "--pinion-success",
+  "--pinion-warning",
+  "--pinion-warning-soft",
+  "--pinion-warning-surface",
+  "--pinion-danger",
+  "--pinion-danger-soft",
+  "--pinion-danger-surface",
   // misc
-  "--pibot-overlay",
-  "--pibot-shadow-color",
+  "--pinion-overlay",
+  "--pinion-shadow-color",
   // code / syntax
-  "--pibot-code-bg",
-  "--pibot-code-fg",
-  "--pibot-code-comment",
-  "--pibot-code-keyword",
-  "--pibot-code-string",
-  "--pibot-code-number",
-  "--pibot-code-title",
-  "--pibot-code-type",
-  "--pibot-code-attr",
-  "--pibot-code-deleted",
+  "--pinion-code-bg",
+  "--pinion-code-fg",
+  "--pinion-code-comment",
+  "--pinion-code-keyword",
+  "--pinion-code-string",
+  "--pinion-code-number",
+  "--pinion-code-title",
+  "--pinion-code-type",
+  "--pinion-code-attr",
+  "--pinion-code-deleted",
 ] as const;
 
 const customThemes = new Map<string, ThemeDefinition>();
@@ -216,7 +216,7 @@ export interface ThemeRoot {
 /** Conservative: theme values are single CSS color-ish values, nothing else. */
 const SAFE_TOKEN_VALUE = /^[#a-zA-Z0-9(),.%\s-]+$/;
 
-/** Apply `--pibot-*` overrides for a runtime-registered theme (validated). */
+/** Apply `--pinion-*` overrides for a runtime-registered theme (validated). */
 export function applyThemeTokens(
   el: Pick<ThemeRoot, "style">,
   tokens: Record<string, string>,

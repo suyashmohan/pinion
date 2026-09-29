@@ -1,5 +1,5 @@
 /**
- * PiBotClient — the browser SDK, 1:1 with the calls the web UI makes.
+ * PinionClient — the browser SDK, 1:1 with the calls the web UI makes.
  *
  * Methods throw `ClientError` on failure; the low-level `api()` helper stays
  * available for callers that prefer `{ ok, error }`.
@@ -33,7 +33,7 @@ import type {
   Unsubscribe,
 } from "@/lib/control/types";
 
-export interface PiBotClientOptions extends HttpClientOptions {
+export interface PinionClientOptions extends HttpClientOptions {
   EventSource?: typeof EventSource;
 }
 
@@ -49,10 +49,10 @@ export class ClientError extends Error {
 
 const enc = encodeURIComponent;
 
-export class PiBotClient {
-  readonly opts: PiBotClientOptions;
+export class PinionClient {
+  readonly opts: PinionClientOptions;
 
-  constructor(opts: PiBotClientOptions = {}) {
+  constructor(opts: PinionClientOptions = {}) {
     this.opts = opts;
   }
 
@@ -260,6 +260,6 @@ export class PiBotClient {
 }
 
 /** Default singleton for the web app (same-origin, HttpOnly cookie). */
-export const pibot = new PiBotClient();
+export const pinion = new PinionClient();
 
 export type { CallContext, PiModel, AgentMessage };

@@ -1,19 +1,19 @@
 /**
- * Isomorphic HTTP helper for the PiBot SDK.
+ * Isomorphic HTTP helper for the Pinion SDK.
  *
  * - Resolves `fetch` **lazily** (`opts.fetch ?? globalThis.fetch`) so tests can
  *   stub it after module import and SSR never captures an absent global.
  * - Defaults to `credentials: "include"` so the same-origin HttpOnly
- *   `pibot_token` cookie rides along.
+ *   `pinion_token` cookie rides along.
  * - `opts.token` is for non-browser clients (loopback MCP deployment b): it
- *   sends `Cookie: pibot_token=<token>` explicitly, which a browser cannot do.
+ *   sends `Cookie: pinion_token=<token>` explicitly, which a browser cannot do.
  *
  * No `bun:*`, no `next/server`, no `@/lib/db` — this module is bundled for the
  * browser.
  */
 
-/** Cookie name of the optional shared token (`PIBOT_TOKEN`). */
-export const TOKEN_COOKIE = "pibot_token";
+/** Cookie name of the optional shared token (`PINION_TOKEN`). */
+export const TOKEN_COOKIE = "pinion_token";
 
 export interface ApiResult<T> {
   ok: boolean;
@@ -26,8 +26,8 @@ export interface HttpClientOptions {
   baseUrl?: string;
   fetch?: typeof fetch;
   /**
-   * If set, every fetch sends `Cookie: pibot_token=<token>`.
-   * The web app leaves this unset: `PIBOT_TOKEN` is HttpOnly and the browser
+   * If set, every fetch sends `Cookie: pinion_token=<token>`.
+   * The web app leaves this unset: `PINION_TOKEN` is HttpOnly and the browser
    * attaches it.
    */
   token?: string;

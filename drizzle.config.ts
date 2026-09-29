@@ -5,7 +5,7 @@ const drizzleConfig = {
   out: "./drizzle",
   dialect: "sqlite",
   dbCredentials: {
-    url: process.env.DATABASE_URL ?? "file:./data/pibot.db",
+    url: process.env.DATABASE_URL ?? "file:./data/pinion.db",
   },
 } satisfies Config;
 

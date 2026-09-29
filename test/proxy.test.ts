@@ -20,8 +20,8 @@ function isPassThrough(res: Response): boolean {
 }
 
 beforeEach(() => {
-  delete process.env.PIBOT_TOKEN;
-  delete process.env.PIBOT_ALLOWED_HOSTS;
+  delete process.env.PINION_TOKEN;
+  delete process.env.PINION_ALLOWED_HOSTS;
 });
 
 describe("proxy wiring", () => {
@@ -58,19 +58,19 @@ describe("proxy wiring", () => {
   });
 
   test("allows a configured LAN host", () => {
-    process.env.PIBOT_ALLOWED_HOSTS = "192.168.1.5";
+    process.env.PINION_ALLOWED_HOSTS = "192.168.1.5";
     const res = proxy(request("GET", "/api/sessions", { host: "192.168.1.5:3000" }));
     expect(isPassThrough(res)).toBe(true);
   });
 
   test("denies API callers when a token is configured but missing", () => {
-    process.env.PIBOT_TOKEN = "s3cret";
+    process.env.PINION_TOKEN = "s3cret";
     const res = proxy(request("GET", "/api/sessions"));
     expect(res.status).toBe(401);
   });
 
   test("mints a cookie from ?token= and redirects without the secret", () => {
-    process.env.PIBOT_TOKEN = "s3cret";
+    process.env.PINION_TOKEN = "s3cret";
     const res = proxy(request("GET", "/?token=s3cret"));
     expect(res.status).toBe(303);
     expect(res.headers.get("location")).toBe("http://localhost:3000/");
@@ -78,7 +78,7 @@ describe("proxy wiring", () => {
   });
 
   test("honours a valid token cookie", () => {
-    process.env.PIBOT_TOKEN = "s3cret";
+    process.env.PINION_TOKEN = "s3cret";
     const res = proxy(request("GET", "/api/sessions", { cookie: `${TOKEN_COOKIE}=s3cret` }));
     expect(isPassThrough(res)).toBe(true);
   });

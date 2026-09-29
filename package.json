@@ -1,5 +1,5 @@
 {
-  "name": "pibot",
+  "name": "pinion",
   "version": "0.1.0",
   "private": true,
   "description": "Single-user web GUI for the Pi coding agent (JSON-RPC mode)",
@@ -7,11 +7,11 @@
   "author": "Suyash Mohan",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/suyashmohan/pibot.git"
+    "url": "git+https://github.com/suyashmohan/pinion.git"
   },
-  "homepage": "https://github.com/suyashmohan/pibot#readme",
+  "homepage": "https://github.com/suyashmohan/pinion#readme",
   "bugs": {
-    "url": "https://github.com/suyashmohan/pibot/issues"
+    "url": "https://github.com/suyashmohan/pinion/issues"
   },
   "keywords": [
     "pi",

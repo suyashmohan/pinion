@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { CornerLeftUp, FileText, Folder, ImagePlus, Loader2, Send, Square, X } from "lucide-react";
-import { pibot } from "@/lib/client";
+import { pinion } from "@/lib/client";
 import { cn } from "@/lib/utils";
 import {
   applyDirMention,
@@ -124,7 +124,7 @@ export function Composer({
     setFiles({ dir: mentionDir, entries: [], loading: true, error: null });
     void (async () => {
       try {
-        const data = await pibot.files.mentions(sessionId, mentionDir);
+        const data = await pinion.files.mentions(sessionId, mentionDir);
         if (cancelled) return;
         filesCache.current.set(mentionDir, data.entries);
         setFiles({ dir: mentionDir, entries: data.entries, loading: false, error: null });
@@ -208,7 +208,7 @@ export function Composer({
   };
 
   return (
-    <div className="relative z-20 rounded-2xl border border-line-strong/60 bg-panel/80 shadow-[0_8px_40px_-12px_var(--pibot-shadow-color)] backdrop-blur transition focus-within:border-line-focus">
+    <div className="relative z-20 rounded-2xl border border-line-strong/60 bg-panel/80 shadow-[0_8px_40px_-12px_var(--pinion-shadow-color)] backdrop-blur transition focus-within:border-line-focus">
       {menuOpen && (
         <div
           ref={menuRef}

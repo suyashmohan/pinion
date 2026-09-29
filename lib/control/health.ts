@@ -28,7 +28,7 @@ export function createHealthService(deps: ControlDeps): HealthService {
     async get() {
       const version = await piVersion();
       return {
-        app: "PiBot",
+        app: "Pinion",
         piBinary: piBinary(),
         piVersion: version,
         piAvailable: version != null,

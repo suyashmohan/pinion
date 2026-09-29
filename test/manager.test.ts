@@ -131,7 +131,7 @@ describe("manager with fake-pi", () => {
   }, 20_000);
 
   test("missing working directory throws instead of spawning", async () => {
-    const { id } = await makeRow("/nope-missing-dir-pibot-xyz");
+    const { id } = await makeRow("/nope-missing-dir-pinion-xyz");
     await expect(ensureClient(id)).rejects.toThrow("does not exist");
   });
 });

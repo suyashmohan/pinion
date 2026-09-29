@@ -1,4 +1,4 @@
-# PiBot — project briefing
+# Pinion — project briefing
 
 Written after a full codebase review (2026-09-20); refreshed (2026-09-23)
 after the control-plane extraction, the theme system, and the git rail. Use
@@ -8,7 +8,7 @@ is the map.
 
 ## What it is
 
-PiBot is a **single-user, self-hosted web GUI** for the [Pi coding agent](https://pi.dev).
+Pinion is a **single-user, self-hosted web GUI** for the [Pi coding agent](https://pi.dev).
 It does not implement an agent. It drives an existing `pi --mode rpc` subprocess
 over JSONL on stdin/stdout, and presents that as a themed chat UI (dark + light
 built in; registry, storage and pre-paint boot script in `lib/themes.ts`).
@@ -19,7 +19,7 @@ session files under `~/.pi` are the source of truth. SQLite is a cache.
 
 The domain layer is the **control plane** (`lib/control`). React components,
 the Next route handlers and the `lib/client` SDK all call it, so a second
-client (mobile app, supervisor agent) can drive PiBot without reimplementing
+client (mobile app, supervisor agent) can drive Pinion without reimplementing
 the Pi event loop. The extraction shipped (see [Layers](#layers)).
 
 It is **not** a multi-user product. Anything that can reach its HTTP port is
@@ -27,7 +27,7 @@ equivalent to a shell on the machine running the server. Default bind is
 loopback (`127.0.0.1`). Docker is the recommended way to run it so that shell
 lives in a container.
 
-Repo: https://github.com/suyashmohan/pibot — MIT, author Suyash Mohan.
+Repo: https://github.com/suyashmohan/pinion — MIT, author Suyash Mohan.
 Tested against **pi 0.85.x** (Docker pins `0.85.1`). Version `0.1.0`.
 
 ## Stack
@@ -40,7 +40,7 @@ Tested against **pi 0.85.x** (Docker pins `0.85.1`). Version `0.1.0`.
 | Theming | Semantic tokens (`app/globals.css`) + `lib/themes.ts` registry | Components use only token utilities — palette classes/hex fail `test/theme.test.ts`. |
 | DB | Drizzle + `bun:sqlite`, WAL | `getDb()` is **async**. Always `await` it. |
 | Agent | `pi --mode rpc` JSONL | Fake stub in `test/helpers/fake-pi.ts` for tests. |
-| Client SDK | `lib/client` (`PiBotClient` + EventSource projector) | Every call the React app makes goes through it; bundle-safe (no `bun:*`, no `next/server`). |
+| Client SDK | `lib/client` (`PinionClient` + EventSource projector) | Every call the React app makes goes through it; bundle-safe (no `bun:*`, no `next/server`). |
 | Git | `git` spawned directly by the server (`lib/git.ts`) | The git rail is a read path: opening it must never start `pi`. |
 | Deploy | One Docker image (Bun + Node + `pi`) | Compose publishes `127.0.0.1` only. |
 
@@ -50,7 +50,7 @@ host). `bun run check` = test + tsc + eslint. There is no `next lint`.
 ## How a request becomes agent output
 
 ```
-Browser ── PiBotClient (fetch + EventSource) ──▶ Next.js API routes
+Browser ── PinionClient (fetch + EventSource) ──▶ Next.js API routes
                                                       │  (proxy.ts guard)
                                                       ▼
                                                  lib/control
@@ -76,7 +76,7 @@ Browser ── PiBotClient (fetch + EventSource) ──▶ Next.js API routes
 3. Pi emits named events (`agent_start`, `message_update`, `tool_execution_*`,
    `agent_settled`, …). The manager fans them out as raw `PiEvent`s; the SSE
    route is a thin adapter over `control.sessions.subscribeRaw`.
-4. `hooks/usePiSession.ts` subscribes via `pibot.sessions.subscribe`
+4. `hooks/usePiSession.ts` subscribes via `pinion.sessions.subscribe`
    (`lib/client/stream.ts`, which owns the EventSource and one projector): it
    registers listeners **per event name** (not `onmessage` — named SSE events
    never hit `onmessage`) and folds each raw event through the single projector
@@ -94,7 +94,7 @@ hold WebSockets without a custom server, so this split is intentional.
 ## Layers
 
 ```
-lib/client (PiBotClient, EventSource + projector)
+lib/client (PinionClient, EventSource + projector)
       │  fetch / SSE
 app/api/**  (thin: parse params → control → ok/fail; SSE uses subscribeRaw)
       │
@@ -141,8 +141,8 @@ Import rules (enforced twice: core `no-restricted-imports` globs in
   adapter that would pass a supervisor ctx is **not built**.
 - Supervisor doors stay as designed: stdio **in the same OS process** as
   `bun run start` (imports `control`, no new listener), or a **separate**
-  `PiBotClient` process against `http://127.0.0.1` with
-  `Cookie: pibot_token=...`. Never import `createControlPlane`/manager in a
+  `PinionClient` process against `http://127.0.0.1` with
+  `Cookie: pinion_token=...`. Never import `createControlPlane`/manager in a
   second OS process (double spawn), never add an internal MCP HTTP route or a
   second listener.
 
@@ -177,8 +177,8 @@ keeps the managed entry and SSE emitter, so respawn is transparent.
 A **global** client (`ensureGlobalClient`, `--no-session`) exists for
 server-side model listing. It is **not** idle-reaped.
 
-State lives on `globalThis` (`__pibotManaged`, `__pibotInflight`,
-`__pibotGlobalClient`, `__pibotDbPromise`) so Next's module graph cannot
+State lives on `globalThis` (`__pinionManaged`, `__pinionInflight`,
+`__pinionGlobalClient`, `__pinionDbPromise`) so Next's module graph cannot
 create a second manager.
 
 ## Data model
@@ -199,8 +199,8 @@ There is **no committed `drizzle/` migrations directory** (`.gitignore` ignores
 `CREATE TABLE IF NOT EXISTS`; **new columns need an explicit idempotent
 `ALTER TABLE` in `lib/db/index.ts`** (`last_turn_ms` was added that way and is
 covered by `test/db.test.ts`). `CREATE TABLE IF NOT EXISTS` alone cannot evolve
-an existing `data/pibot.db`. After changing `lib/db/schema.ts`, restart
-`bun run dev` — the cached `globalThis.__pibotDbPromise` survives HMR and would
+an existing `data/pinion.db`. After changing `lib/db/schema.ts`, restart
+`bun run dev` — the cached `globalThis.__pinionDbPromise` survives HMR and would
 never run the `ALTER`.
 
 Deleting a web session destroys the process and the sqlite row. **Pi's JSONL
@@ -212,11 +212,11 @@ All decisions live in `lib/request-guard.ts`. `proxy.ts` is a thin Next
 adapter. Do not inline security in routes.
 
 1. **Host allowlist** on every method (DNS-rebinding). Loopback names plus
-   `PIBOT_ALLOWED_HOSTS`.
+   `PINION_ALLOWED_HOSTS`.
 2. **Same-origin** for non-GET (CSRF), including `no-cors` + `text/plain`
    that skips CORS preflight. `readJson()` parses any body, so this check is
    load-bearing.
-3. Optional **`PIBOT_TOKEN`** cookie, minted by `GET /?token=...`.
+3. Optional **`PINION_TOKEN`** cookie, minted by `GET /?token=...`.
 
 `lib/file-browser.ts` + `resolveWithinRoot` keep session file APIs inside the
 session cwd. Raw file responses never use `text/html` / script types and are
@@ -228,7 +228,7 @@ including `bash`, the full-filesystem folder picker and session files.
 
 The **folder picker** (`GET /api/projects/folders`) lists arbitrary
 directories on the machine. That is by design for a local tool and is the
-main reason LAN exposure needs `PIBOT_TOKEN` plus a tunnel/VPN.
+main reason LAN exposure needs `PINION_TOKEN` plus a tunnel/VPN.
 
 ## UI map
 
@@ -242,12 +242,12 @@ necessarily the one you were in.
 | `Sidebar` | Project-grouped sessions, search, pin/unpin folders, process dots (working/idle). Collapse prefs in `localStorage`. |
 | `ChatView` | Header (rename, model, compact, copy-last, export, clear-queue, commands & session options / clone), transcript (completed-turn duration in muted small text), composer. |
 | `Composer` | Focus → `onIntent` → start pi. `/` slash commands, `@` file mentions, images, steer/follow-up queue. |
-| `usePiSession` | `pibot.sessions.subscribe` consumer, `SessionEvent` folding, dialogs, toasts, streaming draft (`STREAMING_MESSAGE_ID`). |
+| `usePiSession` | `pinion.sessions.subscribe` consumer, `SessionEvent` folding, dialogs, toasts, streaming draft (`STREAMING_MESSAGE_ID`). |
 | `ThemeMenu` / `ThemeProvider` | Theme switcher in the top strip; registry + storage in `lib/themes.ts`. |
 | `RightPanel` | Shared chrome for the one right-side slot: Files or Git, never both (`nextRightPanel` in `lib/layout.ts`). |
 | `FileBrowser` | One directory level under session cwd; list/gallery; image/code/markdown preview. |
 | `GitPanel` | Working-tree changes vs HEAD: status badge + added/removed counts per file, branch, `isRepo: false` explainer, refresh/poll. **No diff text.** |
-| `useGitStatus` | Loads `pibot.git.status`, refetches on session change/manual refresh, polls 5s while the rail is open. |
+| `useGitStatus` | Loads `pinion.git.status`, refetches on session change/manual refresh, polls 5s while the rail is open. |
 | `ProcessPanel` | Live `pi` inventory + stop/kill. |
 | `Overlays` | Extension UI modals (`select` / `confirm` / `input` / `editor`) + toasts. |
 
@@ -275,7 +275,7 @@ Every route: `runtime = "nodejs"` (Next label; process is still Bun),
 - `GET/PATCH/DELETE /api/sessions/[id]` — detail from cache or live; rename; delete.
 - `POST .../start`, `.../prompt`, `.../control`, `.../model`, `.../bash`, `.../lifecycle`, `.../extension-ui`
 - `GET .../messages`, `.../stats`, `.../stream`, `.../tree` (tree unused by UI)
-- `GET .../export` — download the staged HTML export (`/tmp/pibot-export-<id>.html`), written by `POST .../control { action: "export_html" }`
+- `GET .../export` — download the staged HTML export (`/tmp/pinion-export-<id>.html`), written by `POST .../control { action: "export_html" }`
 - `GET .../files?dir=` — `@` mention listing
 - `GET .../files/browse`, `.../content`, `.../raw` — file browser
 - `GET .../git` — working-tree changes vs HEAD (files + line counts, no diff text; `isRepo: false` is a 200, not an error)
@@ -294,7 +294,7 @@ Every route: `runtime = "nodejs"` (Next label; process is still Bun),
 | In-process projected/raw subscribe | `lib/control/subscribe.ts` |
 | Supervisor policy (self-prompt, cycles, fan-out) | `lib/control/policy.ts` |
 | Control error codes / statuses / DTOs | `lib/control/errors.ts`, `lib/control/types.ts` |
-| Browser SDK / stream folding | `lib/client/**` (`pibot.ts`, `stream.ts`, `sse-names.ts`) |
+| Browser SDK / stream folding | `lib/client/**` (`pinion.ts`, `stream.ts`, `sse-names.ts`) |
 | Spawn / reap / SSE fan-out / message sync | `lib/pi/manager.ts` |
 | JSONL command names / RPC timeouts | `lib/pi/host.ts` |
 | JSONL framing, stdin write, timeouts | `lib/pi/rpc-client.ts` |
@@ -319,7 +319,7 @@ Every route: `runtime = "nodejs"` (Next label; process is still Bun),
 
 ## Testing
 
-Bun-native, `bun test`, no network, no real `pi`, never `./data/pibot.db`.
+Bun-native, `bun test`, no network, no real `pi`, never `./data/pinion.db`.
 TDD is required (`AGENTS.md` / `CONTRIBUTING.md`).
 
 ~59 test files. Highlights:
@@ -355,7 +355,7 @@ installed `@earendil-works/pi-coding-agent@0.85.1`. `tini` is PID 1 — do not
 also set `init: true`.
 
 Volumes: `/app/data` (sqlite), `/root/.pi` (auth + JSONL), host
-`PIBOT_WORKSPACE` (default `./workspace`) → `/workspace`. `.gitignore` ignores
+`PINION_WORKSPACE` (default `./workspace`) → `/workspace`. `.gitignore` ignores
 `workspace` so the default project folder is not committed.
 
 ## Shortcomings and what to improve
@@ -414,7 +414,7 @@ sensible cuts.
     model). Un-ignore `drizzle/` (or formalize the ALTER helper) before the
     next column, so existing user DBs cannot drift.
 15. **CI uses `bun-version: latest`.** A Bun breakage lands as a red main
-    without a PiBot change. Pin the engine (`>=1.2.0` is already in
+    without a Pinion change. Pin the engine (`>=1.2.0` is already in
     `package.json`).
 16. **Docker runs as root.** Documented; bind-mounted workspace files become
     root-owned on Linux. A non-root default (or compose `user:`) would match
@@ -444,7 +444,7 @@ sensible cuts.
 22. **Native `confirm()`** for delete / stop. The rest of the UI is custom
     modals.
 23. **No theme-creation UI yet.** Dark + light ship, the registry supports
-    runtime themes (`registerTheme` + `--pibot-*` overrides), but there is no
+    runtime themes (`registerTheme` + `--pinion-*` overrides), but there is no
     settings page to build/import one, and no density control.
 24. **SSE has no replay.** Reconnect relies on REST refresh. Last-Event-ID
     or a sequence number would close a rare missed-token window.
@@ -484,7 +484,7 @@ Worth adding before the corresponding features:
 - First render is SSR-identical (no `window` in render).
 - Components use only semantic theme tokens (`test/theme.test.ts`).
 - `tini` stays Docker PID 1; compose does not set `init: true`.
-- Tests never touch `./data/pibot.db` or the real `pi` binary.
+- Tests never touch `./data/pinion.db` or the real `pi` binary.
 
 ## How to run
 

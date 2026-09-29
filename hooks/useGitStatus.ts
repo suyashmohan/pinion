@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { pibot } from "@/lib/client";
+import { pinion } from "@/lib/client";
 import type { GitStatusSnapshot } from "@/lib/git-status";
 
 export interface GitStatusState {
@@ -43,7 +43,7 @@ export function useGitStatus(sessionId: string, pollMs = 5000): GitStatusState {
     }));
     void (async () => {
       try {
-        const status = await pibot.git.status(sessionId);
+        const status = await pinion.git.status(sessionId);
         if (cancelled) return;
         setState({ status, loading: false, refreshing: false, error: null });
       } catch (err) {

@@ -4,7 +4,7 @@ import { defaultCwd, extraArgs, piBinary, piIdleTimeoutMs, piMaxProcesses, rpcTi
 const saved = { ...process.env };
 
 afterEach(() => {
-  for (const k of ["PI_BINARY", "PI_DEFAULT_CWD", "PIBOT_DEFAULT_CWD", "PI_EXTRA_ARGS", "PI_RPC_TIMEOUT_MS", "PI_IDLE_TIMEOUT_MS", "PI_MAX_PI_PROCESSES"]) {
+  for (const k of ["PI_BINARY", "PI_DEFAULT_CWD", "PINION_DEFAULT_CWD", "PI_EXTRA_ARGS", "PI_RPC_TIMEOUT_MS", "PI_IDLE_TIMEOUT_MS", "PI_MAX_PI_PROCESSES"]) {
     delete process.env[k];
   }
   Object.assign(process.env, saved);
@@ -21,7 +21,7 @@ describe("piBinary", () => {
 describe("defaultCwd", () => {
   test("prefers PI_DEFAULT_CWD, falls back to process.cwd()", () => {
     delete process.env.PI_DEFAULT_CWD;
-    delete process.env.PIBOT_DEFAULT_CWD;
+    delete process.env.PINION_DEFAULT_CWD;
     expect(defaultCwd()).toBe(process.cwd());
     process.env.PI_DEFAULT_CWD = "/tmp/proj";
     expect(defaultCwd()).toBe("/tmp/proj");

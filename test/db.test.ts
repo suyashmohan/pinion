@@ -31,8 +31,8 @@ describe("sqlite schema (temp DB per test)", () => {
   test("adds last_turn_ms to a database created before the column existed", async () => {
     // Existing installs were created by the `CREATE TABLE IF NOT EXISTS`
     // fallback, which cannot evolve a schema — the ALTER must be idempotent
-    // and run against the user's existing data/pibot.db.
-    const file = `/tmp/${uniqueId("pibot-old")}.db`;
+    // and run against the user's existing data/pinion.db.
+    const file = `/tmp/${uniqueId("pinion-old")}.db`;
     try {
       const old = new Database(file, { create: true });
       old.exec(`
@@ -53,8 +53,8 @@ describe("sqlite schema (temp DB per test)", () => {
 
       process.env.DATABASE_URL = `file:${file}`;
       const g = globalThis as unknown as Record<string, unknown>;
-      g.__pibotDbPromise = undefined;
-      g.__pibotSqlite = undefined;
+      g.__pinionDbPromise = undefined;
+      g.__pinionSqlite = undefined;
 
       const db = await getDb();
       const id = uniqueId("s");

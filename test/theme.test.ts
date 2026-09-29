@@ -69,7 +69,7 @@ describe("theme registry", () => {
       label: "Ocean",
       appearance: "dark",
       preview: { app: "#001122", panel: "#112233", fg: "#eeefff", accent: "#00aaff" },
-      tokens: { "--pibot-app": "#001122", "--pibot-accent": "#00aaff" },
+      tokens: { "--pinion-app": "#001122", "--pinion-accent": "#00aaff" },
     });
     expect(isThemeId("ocean")).toBe(true);
     expect(themeById("ocean").label).toBe("Ocean");
@@ -140,12 +140,12 @@ describe("custom theme tokens", () => {
   test("only known tokens with bounded values are applied", () => {
     const el = fakeEl();
     applyThemeTokens(el, {
-      "--pibot-app": "#123456",
-      "--pibot-accent": "red; background: url(evil)",
+      "--pinion-app": "#123456",
+      "--pinion-accent": "red; background: url(evil)",
       "--not-a-token": "#fff",
     });
-    expect(el.props.get("--pibot-app")).toBe("#123456");
-    expect(el.props.has("--pibot-accent")).toBe(false);
+    expect(el.props.get("--pinion-app")).toBe("#123456");
+    expect(el.props.has("--pinion-accent")).toBe(false);
     expect(el.props.has("--not-a-token")).toBe(false);
   });
 });
@@ -159,7 +159,7 @@ describe("globals.css token contract", () => {
     // naive brace matching is enough for the flat token blocks
     const end = css.indexOf("\n}", open);
     const block = css.slice(open, end);
-    return new Set([...block.matchAll(/(--pibot-[a-z0-9-]+)\s*:/g)].map((m) => m[1]!));
+    return new Set([...block.matchAll(/(--pinion-[a-z0-9-]+)\s*:/g)].map((m) => m[1]!));
   }
 
   test("every token is defined for both built-in themes", async () => {
@@ -171,7 +171,7 @@ describe("globals.css token contract", () => {
 
   test("every Tailwind token mapping points at a known raw token", async () => {
     const css = await Bun.file("app/globals.css").text();
-    const mappings = [...css.matchAll(/--color-([a-z0-9-]+):\s*var\((--pibot-[a-z0-9-]+)\)/g)];
+    const mappings = [...css.matchAll(/--color-([a-z0-9-]+):\s*var\((--pinion-[a-z0-9-]+)\)/g)];
     expect(mappings.length).toBeGreaterThan(10);
     for (const [, , raw] of mappings) {
       expect(THEME_TOKEN_NAMES as readonly string[]).toContain(raw!);

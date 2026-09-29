@@ -9,14 +9,14 @@ export function uniqueId(prefix: string): string {
 
 /**
  * Point DATABASE_URL at a fresh temp file and (re)create the schema there.
- * Never touches the real ./data/pibot.db.
+ * Never touches the real ./data/pinion.db.
  */
 export async function freshDb(): Promise<string> {
-  const file = `/tmp/${uniqueId("pibot-test")}.db`;
+  const file = `/tmp/${uniqueId("pinion-test")}.db`;
   process.env.DATABASE_URL = `file:${file}`;
   const g = globalThis as unknown as Record<string, unknown>;
-  g.__pibotDbPromise = undefined;
-  g.__pibotSqlite = undefined;
+  g.__pinionDbPromise = undefined;
+  g.__pinionSqlite = undefined;
   createdDbs.push(file);
   await getDb();
   return file;
@@ -24,8 +24,8 @@ export async function freshDb(): Promise<string> {
 
 export async function cleanupDbs(): Promise<void> {
   const g = globalThis as unknown as Record<string, unknown>;
-  g.__pibotDbPromise = undefined;
-  g.__pibotSqlite = undefined;
+  g.__pinionDbPromise = undefined;
+  g.__pinionSqlite = undefined;
   delete process.env.DATABASE_URL;
   for (const file of createdDbs.splice(0)) {
     for (const suffix of ["", "-wal", "-shm", "-journal"]) {
@@ -58,7 +58,7 @@ export function installFakePi(extraEnv: Record<string, string> = {}): () => void
 }
 
 export async function makeTempDir(): Promise<string> {
-  const dir = `/tmp/${uniqueId("pibot-dir")}`;
+  const dir = `/tmp/${uniqueId("pinion-dir")}`;
   await $`mkdir -p ${dir}`.quiet();
   return dir;
 }

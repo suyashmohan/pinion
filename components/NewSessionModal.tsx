@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { FolderGit2, Loader2 } from "lucide-react";
-import { pibot } from "@/lib/client";
+import { pinion } from "@/lib/client";
 
 export function NewSessionModal({
   defaultCwd,
@@ -39,7 +39,7 @@ export function NewSessionModal({
     setSaving(true);
     setError(null);
     try {
-      const session = await pibot.sessions.create({
+      const session = await pinion.sessions.create({
         name: name.trim() || undefined,
         cwd: cwd.trim(),
         provider: provider.trim() || undefined,
@@ -86,12 +86,12 @@ export function NewSessionModal({
                 setCwd(e.target.value);
                 setTouchedCwd(true);
               }}
-              list="pibot-project-folders"
+              list="pinion-project-folders"
               placeholder="/path/to/project"
               className="w-full rounded-xl border border-line-strong bg-app px-3 py-2 font-mono text-[12px] focus:border-line-focus focus:outline-none"
             />
             {suggestions.length > 0 && (
-              <datalist id="pibot-project-folders">
+              <datalist id="pinion-project-folders">
                 {suggestions.map((s) => (
                   <option key={s} value={s} />
                 ))}

@@ -7,26 +7,26 @@ describe("resolveBind", () => {
     expect(DEFAULT_BIND_HOST).toBe("127.0.0.1");
   });
 
-  test("PIBOT_HOST opts into LAN binding", () => {
-    expect(resolveBind({ PIBOT_HOST: " 0.0.0.0 " }).host).toBe("0.0.0.0");
+  test("PINION_HOST opts into LAN binding", () => {
+    expect(resolveBind({ PINION_HOST: " 0.0.0.0 " }).host).toBe("0.0.0.0");
   });
 
-  test("PIBOT_PORT wins over PORT", () => {
-    expect(resolveBind({ PIBOT_PORT: "4000", PORT: "5000" }).port).toBe(4000);
+  test("PINION_PORT wins over PORT", () => {
+    expect(resolveBind({ PINION_PORT: "4000", PORT: "5000" }).port).toBe(4000);
     expect(resolveBind({ PORT: "5000" }).port).toBe(5000);
   });
 
   test("blank values fall back to defaults", () => {
-    expect(resolveBind({ PIBOT_HOST: "  ", PIBOT_PORT: "  ", PORT: "" })).toEqual({
+    expect(resolveBind({ PINION_HOST: "  ", PINION_PORT: "  ", PORT: "" })).toEqual({
       host: DEFAULT_BIND_HOST,
       port: DEFAULT_BIND_PORT,
     });
   });
 
   test("fails fast on an invalid port", () => {
-    expect(() => resolveBind({ PIBOT_PORT: "abc" })).toThrow(/Invalid PIBOT_PORT/);
-    expect(() => resolveBind({ PIBOT_PORT: "0" })).toThrow(/Invalid PIBOT_PORT/);
-    expect(() => resolveBind({ PIBOT_PORT: "70000" })).toThrow(/Invalid PIBOT_PORT/);
-    expect(() => resolveBind({ PIBOT_PORT: "3.5" })).toThrow(/Invalid PIBOT_PORT/);
+    expect(() => resolveBind({ PINION_PORT: "abc" })).toThrow(/Invalid PINION_PORT/);
+    expect(() => resolveBind({ PINION_PORT: "0" })).toThrow(/Invalid PINION_PORT/);
+    expect(() => resolveBind({ PINION_PORT: "70000" })).toThrow(/Invalid PINION_PORT/);
+    expect(() => resolveBind({ PINION_PORT: "3.5" })).toThrow(/Invalid PINION_PORT/);
   });
 });

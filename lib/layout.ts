@@ -17,8 +17,8 @@
 export const MD_BREAKPOINT_PX = 768;
 export const MOBILE_QUERY = "(max-width: 767px)";
 
-const COLLAPSED_KEY = "pibot.project.collapsed";
-const FILE_VIEW_KEY = "pibot.files.view";
+const COLLAPSED_KEY = "pinion.project.collapsed";
+const FILE_VIEW_KEY = "pinion.files.view";
 
 export type FileViewPreference = "list" | "gallery";
 
