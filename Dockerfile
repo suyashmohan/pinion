@@ -10,11 +10,11 @@
 #           `bun --bun next start`, `bun:sqlite`)
 #   deps    `bun install` (cached on package.json + bun.lock)
 #   build   `bun run build` (Next production build)
-#   runner  compiled app, production deps, Node + globally installed `pi`
+#   runner  compiled app, production deps, `pi` installed and run by Bun
 #
-# Bun is the base because it is what Pinion runs on. Node is copied in from the
-# official image solely for `pi` (a Node CLI, `engines.node >= 22.19`); both
-# images are the same Debian release, so glibc matches.
+# Bun is the base because it is the only runtime here: Pinion and `pi` both run
+# on it. `pi`'s published bin is Node-targeted (`#!/usr/bin/env node`), but the
+# base image's `node` is a Bun shim, so the image needs no Node.js.
 ###############################################################################
 
 FROM oven/bun:1-debian AS base
@@ -45,18 +45,11 @@ RUN bun run build \
 FROM base AS runner
 WORKDIR /app
 
-# Node + npm for the `pi` CLI (`#!/usr/bin/env node`). Pinion itself never
-# touches them — it runs on the Bun already present in the base image.
-COPY --from=node:24-trixie-slim /usr/local/bin/node /usr/local/bin/node
-COPY --from=node:24-trixie-slim /usr/local/lib/node_modules /usr/local/lib/node_modules
-RUN ln -s /usr/local/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm \
-  && ln -s /usr/local/lib/node_modules/npm/bin/npx-cli.js /usr/local/bin/npx
-
-# The agent. Pinned for reproducible builds; override with
+# The agent, installed by Bun. Pinned for reproducible builds; override with
 # `--build-arg PI_VERSION=x.y.z` (Pinion is tested against pi 0.99.x).
 ARG PI_VERSION=0.99.1
-RUN npm install -g --ignore-scripts "@earendil-works/pi-coding-agent@${PI_VERSION}" \
-  && npm cache clean --force
+RUN bun add -g --ignore-scripts "@earendil-works/pi-coding-agent@${PI_VERSION}" \
+  && rm -rf /root/.bun/install/cache
 
 ENV NODE_ENV=production \
     PINION_HOST=0.0.0.0 \

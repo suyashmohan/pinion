@@ -70,7 +70,7 @@ Pinion hands it a web UI. The container confines that access to the image plus
 the folders you mount, so the agent can work freely on your projects without
 holding the keys to the rest of the machine.
 
-One image runs everything — Bun, Node, the built web app and the `pi` agent:
+One image runs everything on Bun — the built web app and the `pi` agent:
 
 ```bash
 cp -n .env.example .env   # only if you don't have one; add provider keys
@@ -161,6 +161,10 @@ Not using the container? Then you install the pieces yourself — the
   npm install -g --ignore-scripts @earendil-works/pi-coding-agent
   # or: curl -fsSL https://pi.dev/install.sh | sh
   ```
+
+  A bare-metal pi install runs on Node (its bin is `#!/usr/bin/env node`,
+  `engines.node >= 22.19`). The Docker image installs pi with Bun and runs it
+  on Bun (the base image's `node` is a Bun shim), so it needs no Node.js.
 
   Pinion talks to pi's RPC protocol and is tested against **pi 0.99.x**.
   `GET /api/health` reports the detected version — a newer major pi may need

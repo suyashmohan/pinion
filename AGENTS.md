@@ -110,10 +110,11 @@ default** (`PINION_HOST=0.0.0.0` to opt into LAN).
 - `lib/net.ts` + `scripts/next.ts` — bind resolution (`DEFAULT_BIND_HOST`
   loopback) and the launcher that passes `-H`/`-p` to Next.
 - `Dockerfile` + `docker-compose.yml` + `.dockerignore` — single-image
-  deployment. Base: `oven/bun:1-debian` — Bun is Pinion's runtime, and Node
-  (for the `pi` CLI) is copied in from `node:24-trixie-slim`; both are the
-  same Debian release, so glibc matches. Stages run `bun install`,
-  `bun run build`, then install `pi` globally with npm. Runner: prod-only
+  deployment. Base: `oven/bun:1-debian` — Bun is the only runtime: it runs
+  Pinion and `pi` alike. `pi` is installed with `bun add -g`, pinned via the
+  `PI_VERSION` build arg (the base image's `node` is a Bun shim, so pi's node
+  shebang still runs on Bun). Stages run `bun install`, `bun run build`.
+  Runner: prod-only
   `node_modules`, `.next` minus Turbopack caches, plus `scripts/` and
   `lib/net.ts` (the launcher's only import). `PINION_HOST=0.0.0.0` inside;
   compose publishes `127.0.0.1` only (`PINION_PORT` overrides the host port).
