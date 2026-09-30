@@ -53,8 +53,8 @@ RUN ln -s /usr/local/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm \
   && ln -s /usr/local/lib/node_modules/npm/bin/npx-cli.js /usr/local/bin/npx
 
 # The agent. Pinned for reproducible builds; override with
-# `--build-arg PI_VERSION=x.y.z` (Pinion is tested against pi 0.85.x).
-ARG PI_VERSION=0.85.1
+# `--build-arg PI_VERSION=x.y.z` (Pinion is tested against pi 0.99.x).
+ARG PI_VERSION=0.99.1
 RUN npm install -g --ignore-scripts "@earendil-works/pi-coding-agent@${PI_VERSION}" \
   && npm cache clean --force
 

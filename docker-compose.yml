@@ -14,8 +14,8 @@ services:
     build:
       context: .
       args:
-        # Pinion is tested against pi 0.85.x; bump deliberately.
-        PI_VERSION: "0.85.1"
+        # Pinion is tested against pi 0.99.x; bump deliberately.
+        PI_VERSION: "0.99.1"
     image: pinion:local
     # No `init: true` — the image's ENTRYPOINT is tini, which must stay PID 1
     # to reap the `pi` subprocesses and forward signals.

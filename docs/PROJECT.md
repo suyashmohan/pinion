@@ -28,7 +28,7 @@ loopback (`127.0.0.1`). Docker is the recommended way to run it so that shell
 lives in a container.
 
 Repo: https://github.com/suyashmohan/pinion — MIT, author Suyash Mohan.
-Tested against **pi 0.85.x** (Docker pins `0.85.1`). Version `0.1.0`.
+Tested against **pi 0.99.x** (Docker pins `0.99.1`). Version `0.1.0`.
 
 ## Stack
 
@@ -351,7 +351,7 @@ CI (`.github/workflows/ci.yml`): bun latest → test → tsc → eslint → buil
 ## Docker (recommended run)
 
 One image: `oven/bun:1-debian` + Node 24 (for the `pi` CLI) + globally
-installed `@earendil-works/pi-coding-agent@0.85.1`. `tini` is PID 1 — do not
+installed `@earendil-works/pi-coding-agent@0.99.1`. `tini` is PID 1 — do not
 also set `init: true`.
 
 Volumes: `/app/data` (sqlite), `/root/.pi` (auth + JSONL), host
@@ -419,7 +419,7 @@ sensible cuts.
 16. **Docker runs as root.** Documented; bind-mounted workspace files become
     root-owned on Linux. A non-root default (or compose `user:`) would match
     the “confine the agent” story better.
-17. **Pi protocol is a moving target.** Pinned to 0.85.x. A pi major will
+17. **Pi protocol is a moving target.** Pinned to 0.99.x. A pi major will
     need a compatibility matrix and a health warning when versions diverge
     further than they already do.
 

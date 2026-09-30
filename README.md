@@ -133,7 +133,7 @@ Notes:
   the compose `ports:` line **and** set `PINION_ALLOWED_HOSTS` (plus
   `PINION_TOKEN`) — the [Security](#security) rules are unchanged inside a
   container.
-- The image pins the `pi` version (`PI_VERSION`, default `0.85.1`); rebuild
+- The image pins the `pi` version (`PI_VERSION`, default `0.99.1`); rebuild
   with `--build-arg PI_VERSION=x.y.z` to move. `GET /api/health` reports the
   version actually running.
 - Container processes run as `root`, so on Linux files the agent creates in a
@@ -162,7 +162,7 @@ Not using the container? Then you install the pieces yourself — the
   # or: curl -fsSL https://pi.dev/install.sh | sh
   ```
 
-  Pinion talks to pi's RPC protocol and is tested against **pi 0.85.x**.
+  Pinion talks to pi's RPC protocol and is tested against **pi 0.99.x**.
   `GET /api/health` reports the detected version — a newer major pi may need
   Pinion updates.
 
